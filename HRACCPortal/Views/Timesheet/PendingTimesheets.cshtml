@@ -1,0 +1,195 @@
+﻿@model List<HRACCPortal.Models.TimesheetViewModel>
+@{
+    ViewBag.Title = "Pending Timesheets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <div class="card">
+            <div class="card-header border-0 pt-6">
+                <div class="card-title">
+                    <h3>Pending Approval Timesheets</h3>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+                <table class="table table-bordered" id="pendingTimesheetsTable">
+                    <thead>
+                        <tr>
+                            <th>Timesheet ID</th>
+
+                            <th>Month - Year</th>
+                            <th>Total Hours</th>
+                            <th>Customer</th>
+                            <th>Employer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var timesheet in Model)
+                        {
+                            <tr>
+                                <td>@timesheet.TimesheetId</td>
+
+                                <td>@timesheet.Month - @timesheet.Year</td>
+                                <td>@timesheet.TotalHours</td>
+                                <td>@timesheet.CustomerName</td>
+                                <td>@timesheet.EmployerName</td>
+                                <td>
+                                    <button class="btn btn-primary create-invoice-btn"
+                                            data-timesheetid="@timesheet.TimesheetId"
+                                            data-month="@timesheet.Month"
+                                            data-year="@timesheet.Year"
+                                            data-totalhours="@timesheet.TotalHours"
+                                            data-customer="@timesheet.CustomerName"
+                                            data-employer="@timesheet.EmployerName">
+                                        Create Invoice
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".create-invoice-btn").click(function () {
+                var timesheetId = $(this).data("timesheetid");
+                var consultantId = $(this).data("consultant");
+                var month = $(this).data("month");
+                var year = $(this).data("year");
+                var customer = $(this).data("customer");
+                var employer = $(this).data("employer");
+
+                console.log("Fetching invoice data...");
+
+                // Step 1: Get Timesheet Details (RegularHours, OvertimeHours)
+                $.ajax({
+                    type: "GET",
+                    url: "/Timesheet/GetTimesheetDetailsForInvoice",
+                    data: { timesheetId: timesheetId },
+                    dataType: "json",
+                    success: function (timesheet) {
+                        if (!timesheet) {
+                            alert("Timesheet details not found.");
+                            return;
+                        }
+
+                        var regularHours = timesheet.TotalHours;
+                        var overtimeHours = timesheet.OvertimeHours ?? 0;
+                        console.log(timesheet)
+                        // Step 2: Get Consultant Position Details
+                        $.ajax({
+                            type: "GET",
+                            url: "/Timesheet/GetConsultantPositionDetails",
+                            data: { consultantId: timesheet.ConsultantId },
+                            dataType: "json",
+                            success: function (positionDetails) {
+                                if (!positionDetails) {
+                                    alert("Consultant position details not found.");
+                                    return;
+                                }
+                                console.log(positionDetails)
+                                var positionRateIdFK = positionDetails.PositionRateIdFK;
+
+                                // Step 3: Get Position Rate (Rate & OvertimeRate)
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/Timesheet/GetPositionRate",
+                                    data: { positionRateId: positionRateIdFK },
+                                    dataType: "json",
+                                    success: function (positionRate) {
+                                        if (!positionRate) {
+                                            alert("Position rate details not found.");
+                                            return;
+                                        }
+
+                                        console.log(positionRate)
+
+                                        var rate = positionRate.Rate;
+                                        var overtimeRate = positionRate.OvertimeRate;
+
+                                        var invoiceDate = new Date(year, month - 1, 1);  // First day of the given month
+                                        var dueDate = new Date(year, month, 5);  // 5th of next month
+
+                                        // If the month is December, adjust the year
+                                        if (month === 12) {
+                                            dueDate = new Date(year + 1, 0, 5);  // 5th January of next year
+                                        }
+
+                                        // Format the dates as YYYY-MM-DD
+                                        var formattedInvoiceDate = invoiceDate.toISOString().split('T')[0];
+                                        var formattedDueDate = dueDate.toISOString().split('T')[0];
+
+
+                                        // Step 4: Calculate Invoice Amount
+                                        var invoiceAmount = (rate * regularHours) + (overtimeRate * 10);
+
+                                        // Step 5: Send Final Data to AddEditInvoice
+                                        var invoiceData = {
+                                            TimesheetId: timesheetId,
+                                            InvoiceNumber: 89764,
+                                            ConsultantIdFK: timesheet.ConsultantId,
+                                            ConsultantPositionIdFK: positionDetails.ConsultantPositionIdPK,
+                                            Month: month,
+                                            Year: year,
+                                            InvoiceDate: formattedInvoiceDate ,
+                                            DueDate: formattedDueDate,
+                                            RegularHours: regularHours,
+                                            OvertimeHours: 10,
+                                            InvoiceAmount: invoiceAmount,
+                                            CustomerId: timesheet.CustomerId
+                                            
+                                        };
+
+                                        console.log("Final Invoice Data:", invoiceData);
+
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/Invoice/AddEditInvoice",
+                                            data: JSON.stringify(invoiceData),
+                                            dataType: "json",
+                                            contentType: "application/json; charset=utf-8",
+                                             
+                                            success: function (response) {
+                                                console.log(response)
+                                                if (response.message === "Success") {
+                                                    alert("Invoice Created Successfully!");
+                                                    window.location.href = '/Invoice/ViewInvoice';
+                                                } else {
+                                                    alert("Error: " + response.message);
+                                                }
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.error("Error creating invoice:", error);
+                                                alert("Failed to create invoice.");
+                                            }
+                                        });
+                                    },
+                                    error: function () {
+                                        alert("Error fetching position rate.");
+                                    }
+                                });
+                            },
+                            error: function () {
+                                alert("Error fetching consultant position details.");
+                            }
+                        });
+                    },
+                    error: function () {
+                        alert("Error fetching timesheet details.");
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}

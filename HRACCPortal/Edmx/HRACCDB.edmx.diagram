@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="25bceef0cad044069b2667b8ca6d5198" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="HRACCDBModel.Company" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRACCDBModel.Consultant" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRACCDBModel.EmployeeRole" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRACCDBModel.Position" Width="1.5" PointX="4.75" PointY="4.625" />
+        <AssociationConnector Association="HRACCDBModel.FK_Position_Customer" />
+        <EntityTypeShape EntityType="HRACCDBModel.PositionRate" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="HRACCDBModel.Invoice" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.InvoiceReconcile" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Reconcile" Width="1.5" PointX="0.75" PointY="8.5" />
+        <EntityTypeShape EntityType="HRACCDBModel.ConsultantPositionDetail" Width="1.5" PointX="2.75" PointY="6.125" />
+        <EntityTypeShape EntityType="HRACCDBModel.UserDetail" Width="1.5" PointX="7.375" PointY="8.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.ActiveConsultant" Width="1.5" PointX="11.375" PointY="4.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.InvoiceGeneration" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.InvoiceSubmission" Width="1.5" PointX="11.375" PointY="8.75" />
+        <AssociationConnector Association="HRACCDBModel.FK_InvoiceGeneration_InvoiceGeneration" />
+        <EntityTypeShape EntityType="HRACCDBModel.QuaterlySalesReport" Width="1.5" PointX="7.375" PointY="12.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.PaymentsReceived" Width="1.5" PointX="9.375" PointY="12.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Employer" Width="1.5" PointX="11.375" PointY="12.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Customer" Width="2.5" PointX="12.375" PointY="0.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Employee" Width="1.5" PointX="13.375" PointY="5.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Worker" Width="1.5" PointX="13.375" PointY="11.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.SubContractor" Width="3.25" PointX="3.5" PointY="14.875" />
+        <EntityTypeShape EntityType="HRACCDBModel.BalanceSheet" Width="1.5" PointX="0.75" PointY="12.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.Contact" Width="2.75" PointX="15.375" PointY="0.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.SecurityQuestion" Width="1.5" PointX="15.375" PointY="5.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.AspNetUser" Width="1.5" PointX="13.125" PointY="17.625" />
+        <AssociationConnector Association="HRACCDBModel.FK__SecurityQ__UserI__1F63A897" />
+        <EntityTypeShape EntityType="HRACCDBModel.AspNetRole" Width="1.5" PointX="15.375" PointY="8.75" />
+        <AssociationConnector Association="HRACCDBModel.FK_AspNetUsers_AspNetRoles" />
+        <EntityTypeShape EntityType="HRACCDBModel.EmployeeEmployer" Width="1.5" PointX="15.625" PointY="11.25" />
+        <AssociationConnector Association="HRACCDBModel.FK__EmployeeE__Emplo__345EC57D" />
+        <AssociationConnector Association="HRACCDBModel.FK__EmployeeE__Emplo__3552E9B6" />
+        <EntityTypeShape EntityType="HRACCDBModel.CustomerContact" Width="1.5" PointX="18.875" PointY="1.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__CustomerC__Conta__2180FB33" />
+        <AssociationConnector Association="HRACCDBModel.FK__CustomerC__Custo__208CD6FA" />
+        <EntityTypeShape EntityType="HRACCDBModel.CustomerEmployer" Width="1.5" PointX="17.625" PointY="7.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__CustomerE__Custo__4589517F" />
+        <AssociationConnector Association="HRACCDBModel.FK__CustomerE__Emplo__467D75B8" />
+        <EntityTypeShape EntityType="HRACCDBModel.ConsultantEmployer" Width="1.5" PointX="18.625" PointY="10.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__Consultan__Consu__59904A2C" />
+        <AssociationConnector Association="HRACCDBModel.FK__Consultan__Emplo__5A846E65" />
+        <EntityTypeShape EntityType="HRACCDBModel.ConsultantCustomer" Width="1.5" PointX="19.625" PointY="4.625" />
+        <AssociationConnector Association="HRACCDBModel.FK__Consultan__Consu__67DE6983" />
+        <AssociationConnector Association="HRACCDBModel.FK__Consultan__Custo__68D28DBC" />
+        <EntityTypeShape EntityType="HRACCDBModel.SubcontractorEmployer" Width="1.5" PointX="15.625" PointY="14.5" />
+        <AssociationConnector Association="HRACCDBModel.FK__Subcontra__Emplo__7BE56230" />
+        <AssociationConnector Association="HRACCDBModel.FK__Subcontra__Subco__7AF13DF7" />
+        <EntityTypeShape EntityType="HRACCDBModel.TimesheetDetail" Width="1.5" PointX="7.25" PointY="20.625" />
+        <EntityTypeShape EntityType="HRACCDBModel.Timesheet" Width="1.5" PointX="5" PointY="20.375" />
+        <AssociationConnector Association="HRACCDBModel.FK__Timesheet__Consu__0E04126B" />
+        <AssociationConnector Association="HRACCDBModel.FK__Timesheet__Times__13BCEBC1" />
+        <AssociationConnector Association="HRACCDBModel.FK__Timesheet__Custo__2022C2A6" />
+        <AssociationConnector Association="HRACCDBModel.FK__Timesheet__Emplo__2116E6DF" />
+        <EntityTypeShape EntityType="HRACCDBModel.C__MigrationHistory" Width="1.5" PointX="7.375" PointY="16.75" />
+        <EntityTypeShape EntityType="HRACCDBModel.AspNetUserClaim" Width="1.5" PointX="15.375" PointY="18" />
+        <EntityTypeShape EntityType="HRACCDBModel.AspNetUserLogin" Width="1.5" PointX="15.375" PointY="20.75" />
+        <AssociationConnector Association="HRACCDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="HRACCDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="HRACCDBModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="HRACCDBModel.ChequeDetail" Width="1.5" PointX="11.625" PointY="24.375" />
+        <EntityTypeShape EntityType="HRACCDBModel.Deliverable" Width="1.5" PointX="7" PointY="24.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__ChequeDet__Payme__473C8FC7" />
+        <AssociationConnector Association="HRACCDBModel.FK__Deliverab__Posit__3429BB53" />
+        <EntityTypeShape EntityType="HRACCDBModel.InvoicesFrom" Width="1.5" PointX="7.5" PointY="27.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__InvoicesF__Subco__740F363E" />
+        <EntityTypeShape EntityType="HRACCDBModel.InvoicesTo" Width="1.5" PointX="7.5" PointY="31.875" />
+        <AssociationConnector Association="HRACCDBModel.FK__InvoicesT__Subco__025D5595" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

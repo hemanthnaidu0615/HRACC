@@ -1,0 +1,800 @@
+﻿@model HRACCPortal.Models.clsCrud
+@{
+    ViewBag.Title = "ViewConsultants";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--begin::Vendor Stylesheets(used for this page only)-->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<!--end::Vendor Stylesheets-->
+<!--begin::Content-->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search Consultants" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_customer" id="btnpopup">Add Consultant</button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="w-10px pe-2">
+                                #
+                            </th>
+                            <th class="min-w-70px">Consultant Name</th>
+                            <th class="min-w-70px">Email</th>
+                            <th class="min-w-70px">Phone</th>
+                            <th class="min-w-70px">Start Date</th>
+                            <th class="min-w-90px">Last Updated Date</th>
+                            <th class="min-w-70px">Status</th>
+                
+                            <th class="text-end min-w-70px text-center">Actions</th>
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody class="fw-semibold text-gray-600">
+                        @{
+                            if (Model.ConsultantList.Count > 0)
+                            {
+                                foreach (var item in Model.ConsultantList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.ConsultantIdPK
+                                        </td>
+                                        <!--begin::Name=-->
+                                        <td>
+                                            <span  class="text-gray-800 text-hover-primary mb-1">@item.FirstName @item.LastName</span>
+                                        </td>
+                                        <!--end::Name=-->
+                                        <!--begin::Email=-->
+                                        <td>
+                                            <span  class="text-gray-600 text-hover-primary mb-1">@item.Email</span>
+                                        </td>
+                                        <!--end::Email=-->
+                                        <td>@item.Phone</td>
+                                        <!--end::Payment method=-->
+                                        <!--begin::Date=-->
+                                        <td>@item.StartDate</td>
+                                        <td>@item.DateUpdated</td>
+                                        <td>
+                                            @if (item.Active)
+                                            {
+                                                <span class="badge badge-light-success fs-7 fw-bold">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-light-danger fs-7 fw-bold">In-Active</span>
+                                            }
+                                        </td>
+
+                                        
+                                        <!--end::Date=-->
+                                        <!--begin::Action=-->
+                                        <td class="text-end">
+                                            @*<button type="button" class="btn btn-primary btnEdit" id="@item.ConsultantIdPK" onClick="GFG_click(this.id)">Edit</button>*@
+
+                                            <div class="d-flex gap-2">
+                                                <a href="/Consultant/AssignConsultantCustomers?consultantId=@item.ConsultantIdPK" class="btn btn-primary">Assign Customers</a>
+
+                                                <a href="/Consultant/ViewAssignedConsultantCustomers?consultantId=@item.ConsultantIdPK" class="btn btn-primary">View Customers</a>
+
+                                                <a href="/Consultant/AssignConsultantEmployers?consultantId=@item.ConsultantIdPK" class="btn btn-primary">Assign Employers</a>
+
+                                                <a href="/Consultant/ViewAssignedConsultantEmployers?consultantId=@item.ConsultantIdPK" class="btn btn-primary">View Employers</a>
+
+
+                                                <a href="javascript:void(0)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" id="@item.ConsultantIdPK" onClick="GFG_click(this.id)">
+                                                    @*begin::Svg Icon | path: icons/duotune/art/art005.svg*@
+                                                    <span class="svg-icon svg-icon-3">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor" />
+                                                            <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor" />
+                                                        </svg>
+                                                    </span>
+                                                    @*end::Svg Icon*@
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <!--end::Action=-->
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+        <!--begin::Modals-->
+        <!--begin::Modal - Customers - Add-->
+        <div class="modal fade" id="kt_modal_add_customer" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog modal-dialog-centered mw-650px">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Form-->
+                    <form id="kt_modal_add_customer_form" class="form" action="#" data-kt-redirect="@Url.Action("ViewConsultants","Consultant")">
+                        <!--begin::Modal header-->
+                        <input type="hidden" name="ConsultantIdPK" value="0" />
+                        <div class="modal-header" id="kt_modal_add_customer_header">
+                            <!--begin::Modal title-->
+                            <h2 class="fw-bold">Consultant Details</h2>
+                            <!--end::Modal title-->
+                            <!--begin::Close-->
+                            <div id="kt_modal_add_customer_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--end::Modal header-->
+                        <!--begin::Card body-->
+                        <div class="modal-body py-10 px-lg-17">
+                            <!--begin::Scroll-->
+                            
+                            <div class="scroll-y me-n7 pe-7" id="kt_modal_add_customer_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_customer_header" data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">First Name</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="First Name" name="FirstName" value="" type="text" maxlength="40"/>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Last Name</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Last Name" name="LastName" value="" type="text" maxlength="40" />
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--begin::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class=" fs-6 fw-semibold mb-2">Middle Name</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Middle Name" name="MiddleName" value="" type="text" maxlength="40" />
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Abbreviation</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Abbreviation" name="ConsultantNameAbbrv" value="" type="text" maxlength="30"/>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Phone</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Phone" name="Phone" value="" type="text" maxlength="10"/>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Email</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Email" name="Email"  id="Email" value="" type="text" maxlength="40"/>
+                                        <span id="emailError" style="color:red; display:none;">Please enter a valid email.</span>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--begin::Input group-->
+                                <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-semibold mb-2">
+                                        <span class="required">Address1</span>
+                                        @*  <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="Address1" title="Address1"></i> *@
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <input class="form-control form-control-solid" placeholder="Address1" name="Address1" value="" type="text" maxlength="100" />
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-semibold mb-2">
+                                        <span class="">Address2</span>
+                                        @* <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Address2"></i> *@
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <input class="form-control form-control-solid" placeholder="Address2" name="Address2" value="" type="text" maxlength="60"/>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">City</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="City" name="City" id="City" value="" type="text" maxlength="30"/>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">State</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @* <input class="form-control form-control-solid" placeholder="State" name="State" value="" /> *@
+                                        <select class="form-control form-control-solid" name="State" id="State">
+                                            <option value="">Select State</option>
+                                            <option value="Alabama">Alabama</option>
+                                            <option value="Alaska">Alaska</option>
+                                            <option value="Arizona">Arizona</option>
+                                            <option value="Arkansas">Arkansas</option>
+                                            <option value="California">California</option>
+                                            <option value="Colorado">Colorado</option>
+                                            <option value="Connecticut">Connecticut</option>
+                                            <option value="Delaware">Delaware</option>
+                                            <option value="Florida">Florida</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Hawaii">Hawaii</option>
+                                            <option value="Idaho">Idaho</option>
+                                            <option value="Illinois">Illinois</option>
+                                            <option value="Indiana">Indiana</option>
+                                            <option value="Lowa">Lowa</option>
+                                            <option value="Kansas">Kansas</option>
+                                            <option value="Kentucky">Kentucky</option>
+                                            <option value="Louisiana">Louisiana</option>
+                                            <option value="Maine">Maine</option>
+                                            <option value="Maryland">Maryland</option>
+                                            <option value="Massachusetts">Massachusetts</option>
+                                            <option value="Michigan">Michigan</option>
+                                            <option value="Minnesota">Minnesota</option>
+                                            <option value="Mississippi">Mississippi</option>
+                                            <option value="Missouri">Missouri</option>
+                                            <option value="Montana">Montana</option>
+                                            <option value="Nebraska">Nebraska</option>
+                                            <option value="Nevada">Nevada</option>
+                                            <option value="New Hampshire">New Hampshire</option>
+                                            <option value="New Jersey">New Jersey</option>
+                                            <option value="New Mexico">New Mexico</option>
+                                            <option value="New York">New York</option>
+                                            <option value="North Carolina">North Carolina</option>
+                                            <option value="North Dakota">North Dakota</option>
+                                            <option value="Ohio">Ohio</option>
+                                            <option value="Oklahoma">Oklahoma</option>
+                                            <option value="Oregon">Oregon</option>
+                                            <option value="Pennsylvania">Pennsylvania</option>
+                                            <option value="Rhode Island">Rhode Island</option>
+                                            <option value="South Carolina">South Carolina</option>
+                                            <option value="South Dakota">South Dakota</option>
+                                            <option value="Tennessee">Tennessee</option>
+                                            <option value="Texas">Texas</option>
+                                            <option value="Utah">Utah</option>
+                                            <option value="Vermont">Vermont</option>
+                                            <option value="Virginia">Virginia</option>
+                                            <option value="Washington">Washington</option>
+                                            <option value="West Virginia">West Virginia</option>
+                                            <option value="Wisconsin">Wisconsin</option>
+                                            <option value="Wyoming">Wyoming</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Zip</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Zip" name="Zip" value="" type="text" maxlength="5" id="Zip" pattern="\d{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                        <div id="zipError" style="color:red; display:none;">Invalid ZIP Code or City/State combination.</div>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">User Name</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="User Name" name="UserName" value="" type="text" maxlength="30"/>
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <!--end::Input group-->
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Title</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Title" name="Title" value="" type="text" maxlength="30"/>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">WorkerType</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @* <input class="form-control form-control-solid" placeholder="State" name="State" value="" /> *@
+                                        <select class="form-control form-control-solid" name="WorkerType">
+                                            <option value="">Select WorkerType</option>
+                                            <option value="SalariedWorker(W2)">SalariedWorker(W2)</option>
+                                            <option value="IndependentWorker(1099)">IndependentWorker(1099)</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Start Date</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="StartDate" name="StartDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" readonly="readonly" />
+                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                <i class="fas fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+
+                                    <!--end::Col-->
+                                </div>
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class=" fs-6 fw-semibold mb-2">Active</label>
+                                        <!--end::Label-->
+                                        <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                            <input class="form-check-input w-45px h-30px" type="checkbox" id="Active" checked>
+                                            <label class="form-check-label" for="Active"></label>
+                                        </div>
+                                    </div>
+                                    <!--end::Col-->
+
+                                </div>
+                                <!--begin::Input group-->
+                                <div class="row g-9 mb-7 divact">
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Inactive Reason</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input class="form-control form-control-solid" placeholder="Inactive Reason" name="InactiveReason" id="InactiveReason" value="" type="password" />
+                                        <div class="fv-plugins-message-container invalid-feedback" id="divreason" style="display:none;">
+                                            <div data-field="FirstName" data-validator="notEmpty">
+                                                Reason is required
+                                            </div>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                    <!--begin::Col-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="required fs-6 fw-semibold mb-2">Inactive Date</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="InactiveDate" name="InactiveDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" readonly="readonly" />
+                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                <i class="fas fa-calendar"></i>
+                                            </span>
+                                            <div class="fv-plugins-message-container invalid-feedback" id="divdate" style="display:none;">
+                                                <div data-field="FirstName" data-validator="notEmpty">
+                                                    Inactive Date is required
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<input class="form-control form-control-solid" placeholder="Inactive Date" name="InactiveDate" value="" />*@
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Col-->
+                                </div>
+
+                                <!--end::Input group-->
+                            </div>
+                        </div>
+                        <!--end::Card body-->
+                        <!--begin::Modal footer-->
+                        <div class="modal-footer flex-center">
+                            <!--begin::Button-->
+                            <button type="reset" id="kt_modal_add_customer_cancel" class="btn btn-danger">Discard</button>
+                            <!--end::Button-->
+                            <!--begin::Button-->
+                            <button type="submit" id="kt_modal_add_customer_submit" class="btn btn-primary">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Modal footer-->
+                        <!--begin::Actions-->
+                        <!--<div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="submit" class="btn btn-light btn-active-light-primary me-2" id="btnReset">Discard</button>
+
+            <button type="submit" class="btn btn-primary" id="btnSave">Save Changes</button>
+        </div>-->
+                        <!--end::Actions-->
+                        <input type="hidden">
+                        <input type="hidden" id="pk">
+                    </form>
+
+                    <div id="passwordModal" class="modal fade" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-primary">Enter Password</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-muted mb-3">Please enter your password to decrypt the values.</p>
+                                    <input type="password" id="decryptPassword" class="form-control" placeholder="Enter your password" />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="confirmPassword" class="btn btn-primary">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Form-->
+                </div>
+            </div>
+        </div>
+        <!--end::Modal - Customers - Add-->
+
+    </div>
+    <!--end::Content container-->
+</div>
+<!--end::Content-->
+
+@section scripts{
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+    <script src="~/Content/assets/js/custom/consultantEmail.js"></script>
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/add.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <!--end::Custom Javascript-->
+    <script>
+
+        $(document).ready(function () {
+            $('input[name="Phone"]').on('input', function () {
+                // Keep only digits and limit to 10 digits
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const zipInput = document.getElementById('Zip');
+            const cityInput = document.getElementById('City');
+            const stateSelect = document.getElementById('State');
+            const zipError = document.getElementById('zipError');
+
+            zipError.style.display = 'none'; // Hide initially
+
+            const stateAbbreviations = {
+                "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
+                "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
+                "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+                "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", // fixed 'Lowa' to 'Iowa'
+                "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
+                "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+                "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
+                "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
+                "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+                "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
+                "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT",
+                "Vermont": "VT", "Virginia": "VA", "Washington": "WA", "West Virginia": "WV",
+                "Wisconsin": "WI", "Wyoming": "WY"
+            };
+
+            // 🔹 Convert abbreviation back to full state name
+            function getFullStateName(abbr) {
+                for (const [full, short] of Object.entries(stateAbbreviations)) {
+                    if (short === abbr) return full;
+                }
+                return null;
+            }
+
+            // ZIP to City/State
+            $('#Zip').on('change', function () {
+                const zip = $(this).val().trim();
+
+                if (zip.length > 0) {
+                    $.ajax({
+                        url: `https://api.zippopotam.us/us/${zip}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const place = data.places[0];
+                            console.log(place)
+                            $('#City').val(place['place name'] || '').trigger('input').trigger('change');
+                            $('#State').val(place['state'] || '');
+                            $('#Country').val(data['country'] || '');
+                            $('#ZipCode').val(zip).trigger('change').trigger('blur');
+
+                        },
+                        error: function () {
+                            $('#City').val('');
+                            $('#State').val('');
+                            $('#Country').val('');
+                            alert('Invalid Zip Code or no data found.');
+                        }
+                    });
+                }
+            });
+
+
+            // City + State to ZIP
+            cityInput.addEventListener('blur', function () {
+                const city = cityInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+                const fullState = stateSelect.value;
+
+                if (city && fullState && stateAbbreviations[fullState]) {
+                    const stateAbbr = stateAbbreviations[fullState];
+                    const url = `https://api.zippopotam.us/us/${stateAbbr}/${city}`;
+
+                    fetch(url)
+                        .then(res => {
+                            if (!res.ok) throw new Error("City/State not found");
+                            return res.json();
+                        })
+                        .then(data => {
+                            zipInput.value = data.places[0]['post code'];
+                            $('#ZipCode').val(zip).trigger('change').trigger('blur');
+
+                            zipError.style.display = 'none';
+                        })
+                        .catch(() => {
+                            zipInput.value = '';
+                            zipError.innerText = 'City and State combination not found';
+                            zipError.style.display = 'inline';
+                        });
+                }
+            });
+
+            // Hide error on user focus
+            [zipInput, cityInput, stateSelect].forEach(el => {
+                el.addEventListener('focus', () => zipError.style.display = 'none');
+            });
+        });
+
+        function handleActiveUI() {
+            if ($("#Active").is(":checked")) {
+                $(".divact").hide();
+                $("#divreason").hide();
+                $("#divdate").hide();
+            } else {
+                $(".divact").show();
+
+                if ($("#InactiveReason").val() === "") {
+                    $("#divreason").show();
+                } else {
+                    $("#divreason").hide();
+                }
+
+                if ($("#InactiveDate").val() === "") {
+                    $("#divdate").show();
+                } else {
+                    $("#divdate").hide();
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            // Trigger blur validation
+            $("#InactiveReason").blur(function () {
+                if ($(this).val() === "") {
+                    $("#divreason").show();
+                } else {
+                    $("#divreason").hide();
+                }
+            });
+
+            $("#InactiveDate").blur(function () {
+                if ($(this).val() === "") {
+                    $("#divdate").show();
+                } else {
+                    $("#divdate").hide();
+                }
+            });
+
+            // Toggle Active checkbox
+            $("#Active").click(function () {
+                handleActiveUI();
+            });
+
+            // Run logic when modal is opened
+            $('#kt_modal_add_customer').on('shown.bs.modal', function () {
+                // Optional: reset values when opening
+                $("#Active").prop("checked", true);
+                $("#InactiveReason").val('');
+                $("#InactiveDate").val('');
+
+                handleActiveUI(); // Apply UI rules based on current checkbox and values
+            });
+        });
+
+        new tempusDominus.TempusDominus(document.getElementById("StartDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+        new tempusDominus.TempusDominus(document.getElementById("InactiveDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+
+        function GFG_click(clicked) {
+            $.ajax({
+                type: "POST",
+                url: '/Consultant/EditConsultant',
+                data: '{id: ' + clicked + '}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#btnpopup").click();
+                    $("input[name='FirstName']").val(response.cl.FirstName);
+                    $("input[name='ConsultantIdPK']").val(response.cl.ConsultantIdPK);
+                    $("input[name='LastName']").val(response.cl.LastName);
+                    $("input[name='MiddleName']").val(response.cl.MiddleName);
+                    $("input[name='ConsultantNameAbbrv']").val(response.cl.ConsultantNameAbbrv);
+                    $("input[name='Address1']").val(response.cl.Address1);
+                    $("input[name='Address2']").val(response.cl.Address2);
+                    $("input[name='City']").val(response.cl.City);
+                    $("select[name='State']").val(response.cl.State);
+                    $("select[name='WorkerType']").val(response.cl.WorkerType);
+                    $("input[name='Zip']").val(response.cl.Zip);
+                    $("input[name='Phone']").val(response.cl.Phone);
+                    $("input[name='Email']").val(response.cl.Email);
+                    $("input[name='Title']").val(response.cl.Title);
+                    $("input[name='StartDate']").val(response.cl.StartDate);
+                    if (response.cl.Active == true) {
+                        $("#Active").prop('checked', true);
+                        $(".divact").hide();
+                    }
+                    if (response.cl.Active == false) {
+                        $("#Active").prop('checked', false);
+                        $(".divact").show();
+                    }
+                    $("input[name='InactiveDate']").val(response.cl.InactiveDate);
+                    $("input[name='InactiveReason']").val(response.cl.InactiveReason);
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    submitButton.removeAttribute('data-kt-indicator');
+
+                    console.log("Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+
+                    Swal.fire({
+                        text: "Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    });
+
+                }
+            });
+
+
+        }
+    </script>
+}

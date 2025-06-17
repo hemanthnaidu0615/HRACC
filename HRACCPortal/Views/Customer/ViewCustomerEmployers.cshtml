@@ -1,0 +1,134 @@
+﻿@model IEnumerable<HRACCPortal.Models.EmployerModel>
+
+@{
+    ViewBag.Title = "Assigned Employers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+
+                <div class="card-title">
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <input type="text" data-kt-customer-table-filter="search" id="searchInput" class="form-control form-control-solid w-250px ps-15" placeholder="Search Employers" />
+                    </div>
+                    <!--<h2 class="text-center assigned-employers-heading">Assigned Employers for @ViewBag.EmployeeName</h2> -->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+
+                    <div class="d-flex justify-content-end gap-3" data-kt-contact-table-toolbar="base">
+                        <a href="/Customer/ViewCustomers" class="btn btn-secondary mb-3 ">Back to Customers</a>
+                        <a href="/Customer/AssignCustomerEmployers?customerId=@ViewBag.CustomerId" class="btn btn-success mb-3">Add Employers</a>
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+
+
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="table">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="w-10px pe-2">S No</th>
+                            <th class="min-w-125px">Employer Name</th>
+                            <th class="min-w-125px">Employer Contact Email</th>
+                            <th class="min-w-125px">Employer Phone</th>
+                        </tr>
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody id="employerTableBody" class="fw-semibold text-gray-600">
+                        @if (Model.Any())
+                        {
+                            int index = 1;
+                            foreach (var employer in Model)
+                            {
+                                <tr>
+                                    <td>@index</td>
+                                    <td>@employer.EmployerName</td>
+                                    <td>@employer.EmployerContactEmail</td>
+                                    <td>@employer.EmployerContactPhone</td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-10">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-user-times fa-2x mb-3 text-danger"></i>
+                                        <span class="fs-5 fw-semibold">No employers assigned to this customer yet.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Content container-->
+</div>
+
+
+@section scripts{
+
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/Employee.js"></script>
+
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            let searchTerm = this.value.toLowerCase();
+            let tableRows = document.querySelectorAll('#employerTableBody tr');
+
+            tableRows.forEach(row => {
+                let employerName = row.cells[1].textContent.toLowerCase();
+                let employerEmail = row.cells[2].textContent.toLowerCase();
+
+                if (employerName.includes(searchTerm) || employerEmail.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}
+

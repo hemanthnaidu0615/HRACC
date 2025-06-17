@@ -1,0 +1,386 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <!--begin::Card-->
+
+    <div class="card mb-5 mb-xl-10">
+        <!--begin::Card header-->
+        <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+            <!--begin::Card title-->
+            <div class="card-title m-0">
+                <h3 class="fw-bold m-0">SubContractor Details</h3>
+            </div>
+            <!--end::Card title-->
+        </div>
+        <!--begin::Card header-->
+        <!--begin::Content-->
+        <div id="kt_account_settings_profile_details" class="collapse show">
+            <!--begin::Form-->
+            <form id="kt_account_profile_details_form" class="form fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+                <!--begin::Card body-->
+                <div class="card-body border-top p-9">
+
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label required fw-semibold fs-6">Full Name</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-10 fv-row fv-plugins-icon-container">
+                            <input type="text" name="SubContractorName" id="SubContractorName" class="form-control form-control-lg form-control-solid" placeholder="Full Name" maxlength="60">
+                            <div class="fv-plugins-message-container invalid-feedback"></div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Input group-->
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            <span class="required">Phone</span>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row fv-plugins-icon-container">
+                            <input type="tel" name="SubContractorContactPhone" id="SubContractorContactPhone" class="form-control form-control-lg form-control-solid" placeholder="Phone">
+                            <div class="fv-plugins-message-container invalid-feedback"></div>
+                        </div>
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            <span class="required">Email</span>
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row fv-plugins-icon-container">
+                            <input type="tel" name="SubContractorContactEmail" id="SubContractorContactEmail" class="form-control form-control-lg form-control-solid" placeholder="Email" maxlength="40">
+                            <div class="fv-plugins-message-container invalid-feedback"></div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Input group-->
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            Address1
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-10 fv-row">
+                            <input type="text" name="SubContractorContactAddress1" id="SubContractorContactAddress1" class="form-control form-control-lg form-control-solid" placeholder="Address1" maxlength="100">
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Input group-->
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">Address2</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-10 fv-row">
+                            <input type="text" name="SubContractorContactAddress2" id="SubContractorContactAddress2" class="form-control form-control-lg form-control-solid" placeholder="Address2" maxlength="40">
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Input group-->
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">City</label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row"> 
+                            <input type="text" name="SubContractorContactCity" id="SubContractorContactCity" class="form-control form-control-lg form-control-solid" placeholder="City" maxlength="50">
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            State
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row">
+                            @*   <input type="text" name="CustomerContactState" id="CustomerContactState" class="form-control form-control-lg form-control-solid" placeholder="State">*@
+                            <select class="form-control form-control-solid" name="SubContractorContactState" id="state">
+                                <option value="">Select State</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Lowa">Lowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
+                            </select>
+                        </div>
+                        <!--end::Col-->
+
+                    </div>
+                    <!--end::Input group-->
+                    <!--begin::Input group-->
+                    <div class="row mb-6">
+
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            Zip
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row">
+                            <input type="text" name="SubContractorContactZip" id="SubContractorContactZip" class="form-control form-control-lg form-control-solid" placeholder="Zip"  maxlength="5" pattern="\d{5}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
+                            <div id="zipError" style="color:red; display:none;">Invalid ZIP Code or City/State combination.</div>
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            Title
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row">
+                            <input type="text" name="SubContractorTerm" id="SubContractorTerm" class="form-control form-control-lg form-control-solid" placeholder="Term">
+                        </div>
+                        <!--end::Col-->
+                        <!--begin::Label-->
+
+                        <!-- ================================================ -->
+
+
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">
+                            FEID
+                        </label>
+                        <!--end::Label-->
+                        <!--begin::Col-->
+                        <div class="col-lg-4 fv-row">
+                            <input type="text" name="SubContractorFEID" id="SubContractorFEID" class="form-control form-control-lg form-control-solid" placeholder="FEID" maxlength="9">
+                        </div>
+                        <!--end::Col-->
+
+                        <!-- ================================================ -->
+
+
+                        <!--begin::Label-->
+                        <label class="col-lg-2 col-form-label fw-semibold fs-6">Active</label>
+                        <!--begin::Label-->
+
+                        <div class="col-lg-4 d-flex align-items-center">
+                            @*<label><input type="checkbox" id="isActive" class="chk"> Select This</label>*@
+
+                            <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                <input class="form-check-input w-45px h-30px" type="checkbox" id="isActive">
+                                <label class="form-check-label" for="isActive"></label>
+                            </div>
+                        </div>
+                        <!--begin::Label-->
+                    </div>
+                    <!--end::Input group-->
+                </div>
+                <!--end::Card body-->
+                <!--begin::Actions-->
+                <div class="card-footer d-flex justify-content-end py-6 px-9">
+                    <button type="submit" class="btn btn-light btn-active-light-primary me-2" id="btnReset">Discard</button>
+
+                    <button type="submit" class="btn btn-primary" id="btnSave">Save Changes</button>
+                </div>
+                <!--end::Actions-->
+                <input type="hidden">
+            </form>
+            <!--end::Form-->
+        </div>
+        <!--end::Content-->
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/assets/js/validateSubEmail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const zipInput = document.getElementById('SubContractorContactZip');
+            const cityInput = document.getElementById('SubContractorContactCity');
+            const stateSelect = document.getElementById('state');
+            const zipError = document.getElementById('zipError');
+
+            zipError.style.display = 'none'; // Hide initially
+
+            const stateAbbreviations = {
+                "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
+                "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
+                "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+                "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", // fixed 'Lowa' to 'Iowa'
+                "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME", "Maryland": "MD",
+                "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+                "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
+                "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
+                "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+                "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
+                "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT",
+                "Vermont": "VT", "Virginia": "VA", "Washington": "WA", "West Virginia": "WV",
+                "Wisconsin": "WI", "Wyoming": "WY"
+            };
+
+            // 🔹 Convert abbreviation back to full state name
+            function getFullStateName(abbr) {
+                for (const [full, short] of Object.entries(stateAbbreviations)) {
+                    if (short === abbr) return full;
+                }
+                return null;
+            }
+
+            // ZIP to City/State
+            $('#SubContractorContactZip').on('change', function () {
+                const zip = $(this).val().trim();
+
+                if (zip.length > 0) {
+                    $.ajax({
+                        url: `https://api.zippopotam.us/us/${zip}`,
+                        method: 'GET',
+                        success: function (data) {
+                            const place = data.places[0];
+                            console.log(place)
+                            $('#SubContractorContactCity').val(place['place name'] || '');
+                            $('#state').val(place['state'] || '');
+                           
+                            $('#ZipCode').val(zip).trigger('change').trigger('blur');
+
+                        },
+                        error: function () {
+                            $('#SubContractorContactCity').val('');
+                            $('#state').val('');
+                            
+                            alert('Invalid Zip Code or no data found.');
+                        }
+                    });
+                }
+            });
+
+
+            // City + State to ZIP
+            cityInput.addEventListener('blur', function () {
+                const city = cityInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+                const fullState = stateSelect.value;
+
+                if (city && fullState && stateAbbreviations[fullState]) {
+                    const stateAbbr = stateAbbreviations[fullState];
+                    const url = `https://api.zippopotam.us/us/${stateAbbr}/${city}`;
+
+                    fetch(url)
+                        .then(res => {
+                            if (!res.ok) throw new Error("City/State not found");
+                            return res.json();
+                        })
+                        .then(data => {
+                            zipInput.value = data.places[0]['post code'];
+                            $('#ZipCode').val(zip).trigger('change').trigger('blur');
+
+                            zipError.style.display = 'none';
+                        })
+                        .catch(() => {
+                            zipInput.value = '';
+                            zipError.innerText = 'City and State combination not found';
+                            zipError.style.display = 'inline';
+                        });
+                }
+            });
+
+            // Hide error on user focus
+            [zipInput, cityInput, stateSelect].forEach(el => {
+                el.addEventListener('focus', () => zipError.style.display = 'none');
+            });
+        });
+
+       $(function () {
+           $("#btnReset").click(function (e) {
+               e.preventDefault();
+               window.location.href = '@Url.Action("ViewSubContractors", "SubContractor")';
+           });
+
+           $("#btnSave").click(function (e) {
+
+            debugger;
+            e.preventDefault();
+               var subc = {};
+               subc.SubContractorName = $("#SubContractorName").val();
+               subc.SubContractorContactPhone = $("#SubContractorContactPhone").val();
+               subc.SubContractorContactEmail = $("#SubContractorContactEmail").val();
+               subc.SubContractorContactAddress1 = $("#SubContractorContactAddress1").val();
+               subc.SubContractorContactAddress2 = $("#SubContractorContactAddress2").val();
+               subc.SubContractorContactCity = $("#SubContractorContactCity").val();
+               subc.SubContractorContactState = $("#SubContractorContactState").val();
+               subc.SubContractorIdPK = $("#SubContractorIdPK").val();
+
+               subc.SubContractorContactZip = $("#SubContractorContactZip").val();
+               subc.SubContractorFEID = $("#SubContractorFEID").val();
+               subc.SubContractorTerm = $("SubContractorTerm").val();
+               subc.isActive = $('input#isActive').prop('checked');
+               console.log("Employee:" + JSON.stringify(subc))
+
+             $.ajax({
+                type: "POST",
+                 url: '@Url.Action("AddSubContractor", "SubContractor")',
+                 data: '{subcontractor: ' + JSON.stringify(subc) + '}',
+                // data: JSON.stringify({ customer: cust }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    // alert("Data has been added successfully.");
+                    if (response.Message == "SUCCESS") {
+                        window.location.href = '@Url.Action("ViewSubContractors", "SubContractor")';
+                    } else {
+                        alert("Error while inserting data");
+                        return false;
+                    }
+                },
+                error: function () {
+                    alert("Error while inserting data");
+                }
+            });
+            return false;
+        });
+    });
+    </script>
+
+}

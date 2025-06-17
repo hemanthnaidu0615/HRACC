@@ -1,0 +1,220 @@
+﻿@{
+    ViewBag.Title = "Create Timesheet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="card shadow-lg rounded-4 border-0">
+        <div class="card-body p-5">
+            <h2 class="mb-4 text-primary fw-bold text-center">Create Timesheet</h2>
+
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="fw-semibold">Select Month:</label>
+                    <select id="month" class="form-control form-select shadow-sm">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option value="@i">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="fw-semibold">Select Year:</label>
+                    <input type="number" id="year" class="form-control shadow-sm" value="@DateTime.Now.Year" />
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-semibold">Select Customer:</label>
+                    <select id="customer" class="form-control form-select shadow-sm">
+                        <option value="">Select Customer</option>
+                        @foreach (var customer in ViewBag.Customers)
+                        {
+                            <option value="@customer.CustomerIdPK">@customer.CustomerName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-semibold">Select Employer:</label>
+                    <select id="employer" class="form-control form-select shadow-sm">
+                        <option value="">Select Employer</option>
+                        @foreach (var employer in ViewBag.Employers)
+                        {
+                            <option value="@employer.EmployerIdPK">@employer.EmployerName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-1 text-center">
+                    <button id="validateAndLoadDays" class="btn btn-primary fw-bold shadow w-100">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="daysTable" class="card mt-4 shadow-lg rounded-4 border-0 p-4" style="display:none;">
+        <h3 class="mb-3 text-center fw-bold text-primary">Timesheet for <span id="selectedMonth"></span> <span id="selectedYear"></span></h3>
+        <form id="timesheetForm">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow-sm text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Date</th>
+                            <th>SOW Deliverable</th>
+                            <th>Description</th>
+                            <th>Hours</th>
+                            <th>OT Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daysBody"></tbody>
+                </table>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-success fw-bold shadow-lg px-4">Save Timesheet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            function validateCustomerEmployer(callback) {
+                var customerId = $('#customer').val();
+                var employerId = $('#employer').val();
+
+                if (!customerId || !employerId) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Selection',
+                        text: 'Please select both Customer and Employer.'
+                    });
+                    return;
+                }
+
+                $.post('/Timesheet/ValidateCustomerEmployer', { customerId, employerId }, function (response) {
+                    if (!response.success) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Failed',
+                            text: response.message
+                        });
+                        return;
+                    }
+                    callback();
+                }).fail(function (xhr, status, error) {
+                    console.error("Error validating customer-employer relationship:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'Failed to validate customer-employer relationship.'
+                    });
+                });
+            }
+
+            function populateDays() {
+                var month = $('#month').val();
+                var year = $('#year').val();
+                $.post('/Timesheet/GetDays', { month, year }, function (data) {
+                    $('#selectedMonth').text($('#month option:selected').text());
+                    $('#selectedYear').text(year);
+                    $('#daysBody').empty();
+
+                    for (var day = 1; day <= data.daysInMonth; day++) {
+                        $('#daysBody').append(`
+                                    <tr>
+                                        <td>${day} ${$('#month option:selected').text()} ${year}</td>
+                                        <td><input type="text" name="details[${day - 1}].SowDeliverableNumber" class="form-control shadow-sm" /></td>
+                                        <td><input type="text" name="details[${day - 1}].Description" class="form-control shadow-sm" /></td>
+                                        <td><input type="number" name="details[${day - 1}].Hours" class="form-control shadow-sm" step="0.01" /></td>
+                                        <td><input type="number" name="details[${day - 1}].OTHours" class="form-control shadow-sm" step="0.01" /></td>
+                                    </tr>
+                                `);
+                    }
+                    $('#daysTable').fadeIn();
+                }).fail(function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error Loading Days',
+                        text: 'An error occurred while fetching days.'
+                    });
+                });
+            }
+
+            $('#validateAndLoadDays').click(function () {
+                validateCustomerEmployer(populateDays);
+            });
+
+            $('#timesheetForm').submit(function (e) {
+                e.preventDefault();
+                var details = [];
+
+                $('#daysBody tr').each(function (index, row) {
+                    var dateText = $(row).find('td:first').text().trim();
+                    var sowDeliverable = $(row).find('input[name$=".SowDeliverableNumber"]').val().trim();
+                    var description = $(row).find('input[name$=".Description"]').val().trim();
+                    var hours = $(row).find('input[name$=".Hours"]').val().trim();
+                    var otHours = $(row).find('input[name$=".OTHours"]').val().trim();
+
+                    if (description !== "" && hours !== "") {
+                        details.push({ WorkDate: dateText, SowDeliverableNumber: sowDeliverable, Description: description, Hours: parseFloat(hours), OTHours: parseFloat(otHours) });
+                    }
+                });
+
+                $.ajax({
+                    url: '/Timesheet/SaveTimesheet',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        month: $('#month').val(),
+                        year: $('#year').val(),
+                        customerId: $('#customer').val(),
+                        employerId: $('#employer').val(),
+                        details: details
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Timesheet saved successfully!',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/Timesheet/Index';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Save Failed',
+                                text: response.message
+                            });
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<script>
+    document.querySelector("form")?.addEventListener("submit", function (e) {
+        let isValid = true;
+
+        document.querySelectorAll(".hours-input").forEach(input => {
+            if (parseFloat(input.value) > 12) {
+                alert("Hours cannot exceed 12.");
+                isValid = false;
+            }
+        });
+
+        document.querySelectorAll(".ot-input").forEach(input => {
+            if (parseFloat(input.value) > 6) {
+                alert("OT Hours cannot exceed 6.");
+                isValid = false;
+            }
+        });
+
+        if (!isValid) e.preventDefault();
+    });
+</script>

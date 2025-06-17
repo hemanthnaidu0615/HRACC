@@ -1,0 +1,224 @@
+﻿@model IEnumerable<HRACCPortal.Models.TimesheetViewModel>
+@{
+    ViewBag.Title = "Timesheets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-bottom: 2px solid #fff;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 15px;
+    }
+
+    .status-label {
+        display: inline-block;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        color: white;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .status-approved {
+        background: linear-gradient(45deg, #28a745, #34d058);
+    }
+
+    .status-pending {
+        background: linear-gradient(45deg, #fd7e14, #ffaf42);
+    }
+
+    .status-rejected {
+        background: linear-gradient(45deg, #dc3545, #ff5a5f);
+    }
+
+    .filter-container {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .filter-container select, .filter-container input {
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 220px;
+        }
+
+    .btn {
+        border-radius: 8px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Timesheets</h3>
+            <a href="/Timesheet/Create" class="btn btn-light">+ Add Timesheet</a>
+        </div>
+
+        <div class="table-container">
+            <table class="table table-striped table-hover" id="timesheetTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Customer</th>
+                        <th>Employer</th>
+                        <th>Approval Status</th>
+                        <th>Total Hours</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        int index = 1;
+                        foreach (var timesheet in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(timesheet.Month)</td>
+                                <td>@timesheet.Year</td>
+                                <td>@timesheet.CustomerName</td>
+                                <td>@timesheet.EmployerName</td>
+                                <td>
+                                    <span class="status-label @(timesheet.Approval.ToLower() == "approved" ? "status-approved" : timesheet.Approval.ToLower() == "pending" ? "status-pending" : "status-rejected")">
+                                        @timesheet.Approval
+                                    </span>
+                                </td>
+                                <td>@timesheet.TotalHours</td>
+                                <td>
+                                    <a href="@Url.Action("ViewTimesheet", "Timesheet", new { timesheetId = timesheet.TimesheetId })" class="btn btn-primary btn-sm">View</a>
+                                    @{
+                                        var editDisabled = timesheet.Approval.ToLower() == "approved";
+                                        var title = editDisabled ? "You cannot edit an approved timesheet" : "Edit timesheet";
+                                    }
+                                    <a href="@Url.Action("EditTimesheet", "Timesheet", new { timesheetId = timesheet.TimesheetId })"
+                                       class="btn btn-warning btn-sm edit-link"
+                                       data-approved="@timesheet.Approval.ToLower()">
+                                        Edit
+                                    </a>
+                                    <a href="@Url.Action("SendTimesheet", "Timesheet", new { timesheetId = timesheet.TimesheetId })"
+                                       class="btn btn-success btn-sm">
+                                        Send
+                                    </a>
+                                    <a href="@Url.Action("DownloadTimesheetPdf", "Timesheet", new { timesheetId = timesheet.TimesheetId })"
+                                       class="btn btn-info btn-sm">
+                                        Download
+                                    </a>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No timesheets available.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#timesheetTable').DataTable({
+            "pageLength": 10,          // Default rows per page
+            "lengthMenu": [5, 10, 20], // Options
+            "ordering": true,          // Enable sorting if required
+            "info": true,              // Enable pagination info
+            "paging": true,            // Enable pagination
+            "dom": '<"top"i>rt<"bottom"flp><"clear">', // This controls the position of pagination
+            "language": {
+                "paginate": {
+                    "previous": "Prev",
+                    "next": "Next"
+                }
+            }
+        });
+    });
+    document.getElementById("applyFilters").addEventListener("click", function () {
+        const month = document.getElementById("filterMonth").value;
+        const year = document.getElementById("filterYear").value;
+
+        if (month && year) {
+            // Append the month and year as query parameters without clearing the session
+            window.location.href = `?month=${month}&year=${year}`;
+        } else {
+            alert("Please select both month and year.");
+        }
+    });
+
+
+</script>
+
+<script>
+    document.querySelectorAll(".edit-link").forEach(link => {
+        if (link.dataset.approved === "approved") {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                alert("You cannot edit an approved timesheet.");
+            });
+        }
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.send-email-btn').click(function () {
+            var timesheetId = $(this).data('id');
+
+            if (confirm("Send this timesheet via email to the customer?")) {
+                $.ajax({
+                    url: '/Timesheet/SendTimesheet',
+                    type: 'POST',
+                    data: { timesheetId: timesheetId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("✅ Timesheet sent successfully!");
+                        } else {
+                            alert("❌ Failed to send timesheet: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("❌ Error while sending timesheet.");
+                    }
+                });
+            }
+        });
+    });
+</script>

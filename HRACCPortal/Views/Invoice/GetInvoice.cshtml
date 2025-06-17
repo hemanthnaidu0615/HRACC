@@ -1,0 +1,252 @@
+﻿@model HRACCPortal.Models.InvoicePdfModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f4f6f8;
+        color: #333;
+    }
+
+    .invoice-box {
+        background: #fff;
+        padding: 40px;
+        margin: 30px auto;
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        max-width: 1000px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+        .header img {
+            max-width: 140px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: #1F177F;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+    .info-section {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    .info-box {
+        flex: 1;
+        padding: 20px;
+        background-color: #f9fafe;
+        border-radius: 10px;
+        border: 1px solid #e0e7ff;
+    }
+
+        .info-box h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #1F177F;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+    .invoice-details {
+        font-size: 14px;
+        background-color: #fdfdfd;
+        border: 1px solid #ddd;
+        padding: 16px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 14px;
+        }
+
+        .invoice-table th {
+            background-color: #1F177F;
+            color: white;
+            text-align: left;
+        }
+
+            .invoice-table td:last-child,
+            .invoice-table th:last-child {
+                text-align: right;
+            }
+
+    .total-row {
+        background-color: #f0f4ff;
+        font-weight: bold;
+    }
+
+    .footer {
+        margin-top: 50px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .print-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 25px;
+        background-color: #1F177F;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+        .print-btn:hover {
+            background-color: #3c31c1;
+        }
+</style>
+
+<div class="invoice-box">
+    <div class="header">
+        <img src="~/Content/Images/HRACC_Logo.png" />
+        <h1>Invoice</h1>
+    </div>
+
+    <div class="info-section">
+        <div class="info-box">
+            <h3>From</h3>
+            <strong>@Model.CompanyName</strong><br />
+            @Model.CompanyAddress1 @Model.CompanyAddress2 <br />
+            @Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip <br />
+            Email: @Model.CompanyEmail <br />
+            Phone: @Model.CompanyPhone <br />
+            Fax: @Model.CompanyFax
+        </div>
+
+        <div class="info-box">
+            <h3>To</h3>
+            <strong>@Model.invDetails[0].CustomerName</strong><br />
+            @Model.invDetails[0].CustomerContactAddress1 @Model.invDetails[0].CustomerContactAddress2<br />
+            @Model.invDetails[0].CustomerContactCity, @Model.invDetails[0].CustomerContactState, @Model.invDetails[0].CustomerContactZip<br />
+            @Model.invDetails[0].CustomerContactEmail<br />
+            @Model.invDetails[0].CustomerContactPhone
+        </div>
+    </div>
+
+    <div class="invoice-details">
+        @if (Model.invDetails != null && Model.invDetails.Any())
+        {
+            <text>
+                <b>PO #:</b> @Model.invDetails[0].PurchaseOrderNo <br />
+                <b>Invoice #:</b> @Model.invDetails[0].InvoiceNo <br />
+                <b>Terms:</b> Net @Model.invDetails[0].Term <br />
+                <b>Invoice Date:</b> @Model.invDetails[0].InvoiceDate <br />
+                <b>Due Date:</b> @Model.invDetails[0].DueDate <br />
+                <b>Amount Due (USD):</b> $@Model.invDetails[0].TotalAmount
+            </text>
+        }
+        else
+        {
+            <text>No invoice details available</text>
+        }
+    </div>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>DESCRIPTION</th>
+                <th>HOURS</th>
+                <th>RATE</th>
+                <th>AMOUNT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Model.invDetails[0].FirstName @Model.invDetails[0].MiddleName @Model.invDetails[0].LastName <br />
+                    Title: @Model.invDetails[0].PositionTitle <br />
+                    P.O#: @Model.invDetails[0].PurchaseOrderNo<br />
+                    Job No: @Model.invDetails[0].PositionNumber<br />
+                    Job Family: @Model.invDetails[0].PositionFamily<br />
+                    Scope Variant: @Model.invDetails[0].PositionScopeVariant <br />
+                    Service Date: @Model.invDetails[0].MonthStartDate - @Model.invDetails[0].MonthEndDate
+                </td>
+                <td>@Model.invDetails[0].RegularHours</td>
+                <td>$@Model.invDetails[0].Rate</td>
+                <td>$@Model.invDetails[0].TotalAmount</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right;">Total</td>
+                <td>$@Model.invDetails[0].TotalAmount</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <div>Make all checks payable to <b>@Model.CompanyName</b></div>
+        <div style="margin-top: 20px;">Thank you for your business!</div>
+        <div style="margin-top: 20px;">
+            <a href="@Url.Action("UrlAsPDF", "Home", new { id = Model.invDetails[0].InvoiceIdPK })" class="print-btn">Print Invoice</a>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button id="acceptBtn" class="btn btn-success">Accept Invoice</button>
+            <button id="rejectBtn" class="btn btn-danger">Reject Invoice</button>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    let invoiceActionTaken = false;
+    document.getElementById("acceptBtn").addEventListener("click", function () {
+        invoiceActionTaken = true;
+        fetch('/Invoice/AcceptInvoice?id=@Model.invDetails[0].InvoiceIdPK', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire("Accepted!", "Invoice has been accepted.", "success").then(() => {
+                    window.location.href = "/Invoice/ViewInvoice"; // redirect as needed
+                });
+            });
+    });
+
+    document.getElementById("rejectBtn").addEventListener("click", function () {
+        invoiceActionTaken = true;
+        fetch('/Invoice/RejectInvoice?id=@Model.invDetails[0].InvoiceIdPK', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                Swal.fire("Rejected!", "Invoice has been removed.", "error").then(() => {
+                    window.location.href = "/Invoice/ViewInvoice"; // redirect as needed
+                });
+            });
+    });
+
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function (e) {
+            if (!invoiceActionTaken && !link.classList.contains("print-btn")) {
+                e.preventDefault();
+                Swal.fire("Action Required", "Please accept or reject the invoice before proceeding.", "warning");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Unauthorized Access";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Use your main layout
+}
+
+<div class="container d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 100vh; background-color: #FFFFFF; overflow: hidden;">
+    <div class="card shadow-lg p-4" style="max-width: 600px; border-radius: 15px; background: linear-gradient(to bottom, #f5f5f5, #eaeaea);">
+        <div class="card-body">
+            <!-- Icon -->
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: #ff6a6a;"></i>
+            </div>
+
+            <!-- Title -->
+            <h1 class="card-title mb-3" style="color: #333333; font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 600;">
+                Access Denied
+            </h1>
+
+            <!-- Description -->
+            <p class="card-text" style="color: #555555; font-family: 'Roboto', sans-serif; font-size: 1rem; line-height: 1.6;">
+                Oops! You do not have permission to view this page. If you believe this is an error, please contact the administrator for assistance.
+            </p>
+
+            <!-- Go Back Button -->
+            <a href="javascript:history.back()"
+               class="btn mt-3 px-5 py-3"
+               style="border-radius: 30px; background-color: #ff6a6a; color: #FFFFFF; font-size: 1rem; font-family: 'Poppins', sans-serif; font-weight: 600; transition: all 0.3s ease; border: none; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                Go Back
+            </a>
+        </div>
+    </div>
+</div>

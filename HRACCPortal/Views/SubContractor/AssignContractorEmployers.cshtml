@@ -1,0 +1,120 @@
+﻿@model IEnumerable<HRACCPortal.Models.EmployerModel>
+
+@{
+
+    var subContractorId = ViewBag.SubContractorIdPK;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var assignedEmployerIds = ViewBag.AssignedEmployerIds as HashSet<int> ?? new HashSet<int>();
+}
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl mt-5">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6 text-center">
+
+                <div class="card-title">
+
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <input type="text" data-kt-customer-table-filter="search" id="searchInput" class="form-control form-control-solid w-250px ps-15" placeholder="Search Employers" />
+                    </div>
+
+                    <!--   <div class="text-center w-100">
+
+                        <h2 style="font-family: 'Arial', sans-serif; font-weight: bold;">Assign Employers to Employee</h2>
+                    </div> -->
+
+                </div>
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body">
+
+                <input type="hidden" id="hiddenEmployeeId" value="@subContractorId" />
+
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="table">
+
+                    <thead>
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="w-10px pe-2">Select</th>
+                            <th class="min-w-150px">Employer Name</th>
+                            <th class="min-w-150px">Employer Email</th>
+                           
+                        </tr>
+                    </thead>
+                    <!-- Table body -->
+                    <tbody class="fw-semibold text-gray-600">
+                        @foreach (var customer in Model)
+                        {
+                            <tr>
+                                <!-- Added a row separator -->
+                                <td>
+                                    <!-- Check if the customer ID is in the assigned IDs set -->
+                                    <input type="checkbox" name="SelectedEmployerIds" value="@customer.EmployerIdPK"
+                                           @(assignedEmployerIds.Contains(customer.EmployerIdPK) ? "checked" : "") />
+
+                                </td>
+                                <td>@customer.EmployerName</td>
+                                <td>@customer.EmployerContactEmail</td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-end gap-3">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveEmployersBtn">Save</button>
+                </div>
+
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Content container-->
+</div>
+
+@section scripts{
+
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/Employee.js"></script>
+
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>$("#saveEmployersBtn").click(function () {
+            const subcontractorId = $("#hiddenEmployeeId").val();
+    const selectedEmployerIds = [];
+            console.log("Inside")
+            $("input[name='SelectedEmployerIds']:checked").each(function () {
+                selectedEmployerIds.push($(this).val());
+            });
+    
+    $.post(`/SubContractor/SaveContractorEmployers`, { subcontractorId, selectedEmployerIds }, function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = "/SubContractor/ViewSubContractors"; // Redirect to employee list or another page
+                } else {
+                    alert(response.message);
+                }
+            });
+        });</script>
+}
+

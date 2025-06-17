@@ -1,0 +1,305 @@
+﻿@model IEnumerable<HRACCPortal.Models.DeliverableModel>
+
+@{
+    ViewBag.Title = "Add Deliverables";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<style>
+    /* Enhance form appearance */
+    #deliverablesForm {
+        background-color: #f9fafe;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+    }
+
+    /* Stylize inputs */
+    #deliverablesTable input.form-control {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        #deliverablesTable input.form-control:focus {
+            border-color: #1F177F;
+            box-shadow: 0 0 0 0.2rem rgba(31, 23, 127, 0.25);
+        }
+
+    /* Add button styling */
+    #addRow.btn-success {
+        background: linear-gradient(45deg, #1F177F, #2c45d1);
+        border: none;
+        padding: 8px 18px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+    }
+
+        #addRow.btn-success:hover {
+            background: linear-gradient(45deg, #2c45d1, #1F177F);
+        }
+
+    /* Save button enhancement */
+    .btn-primary {
+        background-color: #1F177F;
+        border-color: #1F177F;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+        .btn-primary:hover {
+            background-color: #2a239f;
+            border-color: #2a239f;
+        }
+
+    /* Section heading padding and line */
+    .section-heading {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: #1F177F; /* Your H3U primary color */
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid #1F177F;
+        padding-left: 15px;
+        background-color: #F9FAFF;
+        padding: 10px 15px;
+        border-radius: 0.42rem;
+    }
+
+    .existing-deliverables-table {
+        border: 1px solid #e4e6ef;
+        box-shadow: 0 0 10px rgba(31, 23, 127, 0.08);
+        border-radius: 0.42rem;
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+        .existing-deliverables-table th {
+            background-color: #F4F6FA;
+            color: #1F177F;
+            font-size: 0.95rem;
+        }
+
+    .existing-deliverables-table {
+        margin-bottom: 25px;
+        padding: 20px;
+    }
+
+    #deliverablesTable th {
+        background-color: #F4F6FA;
+        color: #1F177F;
+        font-size: 0.95rem;
+    }
+
+
+    .section-heading::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 3px;
+        background-color: #1F177F;
+        margin-top: 8px;
+        border-radius: 2px;
+    }
+
+    /* Button spacing */
+    .mt-4 {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    /* Action button (remove) spacing */
+    #deliverablesTable button.removeRow {
+        border-radius: 6px;
+        padding: 6px 10px;
+    }
+
+    .existing-deliverables-table .btn-danger {
+        border-radius: 6px;
+        padding: 6px 12px;
+    }
+</style>
+
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl mt-5">
+        <div class="card shadow-sm rounded-3">
+            <div class="card-header border-0 pt-6 pb-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <h3 class="card-title">Add Deliverables</h3>
+                <div class="d-flex gap-2">
+                    <a href="/Position/ViewPosition" class="btn btn-secondary">Back to Positions</a>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+
+                @if (Model.Any())
+                {
+                    <div class="section-heading">Previously Added Deliverables</div>
+                    <div class="existing-deliverables-table">
+                        <table class="table existing-deliverables-table" id="existingDeliverablesTable">
+                            <thead class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                <tr>
+                                    <th>Deliverable Number</th>
+                                    <th>Deliverable Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var deliverable in Model)
+                                {
+                                    <tr id="row-@deliverable.DeliverableId">
+                                        <td>@deliverable.DeliverableNumber</td>
+                                        <td>@deliverable.DeliverableDescription</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm deleteDeliverable" data-id="@deliverable.DeliverableId">Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <form id="deliverablesForm">
+                    <input type="hidden" id="PositionId" name="PositionId" value="@ViewBag.PositionId" />
+
+                    <div class="section-heading">Add New Deliverables</div>
+                    <table class="table align-middle table-row-dashed fs-6 gy-5" id="deliverablesTable">
+                        <thead class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <tr>
+                                <th class="min-w-125px">Deliverable Number</th>
+                                <th class="min-w-250px">Deliverable Description</th>
+                                <th class="min-w-50px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deliverablesBody">
+                            <tr>
+                                <td><input type="text" name="DeliverableNumber" class="form-control" placeholder="Enter Deliverable Number" /></td>
+                                <td><input type="text" name="DeliverableDescription" class="form-control" placeholder="Enter Description" /></td>
+                                <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-4">
+                        <button type="button" id="addRow" class="btn btn-success">Add More</button>
+                        <button type="submit" class="btn btn-primary">Save Deliverables</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/Employee.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#addRow').click(function () {
+                const newRow = `
+                    <tr>
+                        <td><input type="text" name="DeliverableNumber" class="form-control" placeholder="Enter Deliverable Number" /></td>
+                        <td><input type="text" name="DeliverableDescription" class="form-control" placeholder="Enter Description" /></td>
+                        <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
+                    </tr>`;
+                $('#deliverablesBody').append(newRow);
+            });
+
+            $(document).on('click', '.removeRow', function () {
+                $(this).closest('tr').remove();
+            });
+
+            $('#deliverablesForm').submit(function (e) {
+                e.preventDefault();
+
+                var deliverables = [];
+                var positionId = $('#PositionId').val();
+
+                $('#deliverablesBody tr').each(function () {
+                    var number = $(this).find('input[name="DeliverableNumber"]').val();
+                    var desc = $(this).find('input[name="DeliverableDescription"]').val();
+
+                    if (number && desc) {
+                        deliverables.push({
+                            PositionId: positionId,
+                            DeliverableNumber: number,
+                            DeliverableDescription: desc
+                        });
+                    }
+                });
+
+                if (deliverables.length === 0) {
+                    Swal.fire('Error', 'Please add at least one deliverable.', 'error');
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("AddDeliverables", "Deliverable")',
+                    type: 'POST',
+                    data: JSON.stringify(deliverables),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Success', 'Deliverables added successfully.', 'success')
+                                .then(() => window.location.reload());
+                        } else {
+                            Swal.fire('Error', response.message || 'An error occurred.', 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.deleteDeliverable', function () {
+                var id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will permanently remove the deliverable.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("DeleteDeliverable", "Deliverable")',
+                            type: 'POST',
+                            data: { id: id },
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#row-' + id).remove();
+                                    Swal.fire('Deleted!', 'Deliverable has been removed.', 'success');
+                                } else {
+                                    Swal.fire('Error', response.message, 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Failed to delete deliverable.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,205 @@
+﻿@*<div class="p-15">
+        <table class="table" width="100%" style="padding-left:10px;">
+            <tr>
+                <td>
+                    <img src="~/Content/Images/HRACC_Logo.png" />
+                </td>
+                <td></td>
+                <td><h1 style="text-align: center;margin-top: 50px;font-size: 50px;">Invoice</h1></td>
+            </tr>
+            <tr>
+                <td>
+                    <h2>@Model.CompanyName</h2>
+                    @Model.CompanyAddress1 @Model.CompanyAddress2 <br />
+                    @Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip
+                    @Model.CompanyEmail <br />
+                    @Model.CompanyPhone <br />
+                    @Model.CompanyFax
+                </td>
+                <td></td>
+                <td style="text-align:right;">
+                    <br />
+                    @Model.invDetails[0].PurchaseOrderNo <br />
+                    Invoice: <b> #@Model.invDetails[0].InvoiceNo</b> <br />
+                    Terms: <b> Net 30</b> <br />
+                    Invoice Date:  <b> @Model.invDetails[0].InvoiceDate</b> <br />
+                    Payment Due:   <b> @Model.invDetails[0].DueDate</b> <br />
+                    Amount Due (USD) <br />
+                    <b> $@Model.invDetails[0].TotalAmount</b>
+                </td>
+            </tr>
+            <tr><td colspan="3"><br /></td></tr>
+            <tr>
+                <td>
+                    To: <br />
+                    @Model.invDetails[0].CustomerName <br />
+                    @Model.invDetails[0].CustomerContactAddress1 @Model.invDetails[0].CustomerContactAddress2<br />
+                    @Model.invDetails[0].CustomerContactCity, @Model.invDetails[0].CustomerContactState, @Model.invDetails[0].CustomerContactZip<br />
+                    @Model.invDetails[0].CustomerContactEmail<br />
+                    @Model.invDetails[0].CustomerContactPhone<br />
+
+                </td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <table class="table" style="border:1px solid #eee; padding:5px;" id="subtable">
+                        <tr style="border:1px solid #eee; padding:5px;">
+                            <th style="border:1px solid #eee; padding:5px;">DESCRIPTION</th>
+                            <th style="border:1px solid #eee; padding:5px;">HOURS</th>
+                            <th style="border:1px solid #eee; padding:5px;">RATE</th>
+                            <th style="border:1px solid #eee; padding:5px; text-align:right;">AMOUNT</th>
+                        </tr>
+                        <tr style="border:1px solid #eee; padding:5px;">
+                            <td style="border:1px solid #eee; padding:5px;">
+                                @Model.invDetails[0].FirstName @Model.invDetails[0].MiddleName @Model.invDetails[0].LastName <br />
+                                Title: @Model.invDetails[0].PositionTitle <br />
+                                P.O#: @Model.invDetails[0].PurchaseOrderNo<br />
+                                Job No: @Model.invDetails[0].PositionNumber<br />
+                                Job Family: @Model.invDetails[0].PositionFamily<br />
+                                Scope Variant: @Model.invDetails[0].PositionScopeVariant <br />
+                                Service Date: [Month Start Date] - [Month End Date]
+                            </td>
+                            <td style="border:1px solid #eee; padding:5px;">@Model.invDetails[0].RegularHours</td>
+                            <td style="border:1px solid #eee; padding:5px;">$@Model.invDetails[0].Rate</td>
+                            <td style="border:1px solid #eee; padding:5px;text-align:right;">$@Model.invDetails[0].TotalAmount</td>
+                        </tr>
+                        <tr>
+
+                            <td colspan="3" style="border:1px solid #eee; padding:5px;text-align:right;">Total &nbsp; </td>
+                            <td style="border:1px solid #eee; padding:5px;text-align:right;">$@Model.invDetails[0].TotalAmount</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="3"><br /></td></tr>
+            <tr>
+                <td colspan="3" style="text-align:left">Make all checks payable to @Model.CompanyName</td>
+            </tr>
+            <tr><td colspan="3"><br /></td></tr>
+            <tr>
+                <td colspan="3" style="text-align:center">Thank you for your business!</td>
+            </tr>
+
+        </table>
+    </div>*@
+
+@model HRACCPortal.Models.InvoicePdfModel
+@{
+    //  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+<!--begin::Fonts(mandatory for all pages)-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+<!--end::Fonts-->
+<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+<link href="~/Content/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+<!--end::Global Stylesheets Bundle-->
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <!--begin::Card-->
+
+    <div class="card mb-5 mb-xl-10">
+        <!--begin::Card header-->
+        <!--<div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">-->
+        <!--begin::Card title-->
+        <!--<div class="card-title m-0">
+            <h3 class="fw-bold m-0">Customer Details</h3>
+        </div>-->
+        <!--end::Card title-->
+        <!--</div>-->
+        <!--begin::Card header-->
+        <!--begin::Content-->
+        <div id="kt_account_settings_profile_details" class="collapse show">
+            <div class="p-15">
+                <table class="table" width="100%" style="padding-left:10px; border:1px dashed #fff !important;">
+                    <tr>
+                        <td>
+                            <img src="~/Content/Images/HRACC_Logo.png" />
+                        </td>
+                        <td></td>
+                        <td><h1 style="text-align: center;margin-top: 50px;font-size: 50px;">Invoice </h1></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h2>@Model.CompanyName</h2>
+                            @Model.CompanyAddress1 @Model.CompanyAddress2 <br />
+                            @Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip
+                            @Model.CompanyEmail <br />
+                            @Model.CompanyPhone <br />
+                            @Model.CompanyFax
+                        </td>
+                        <td></td>
+                        <td style="text-align:right;">
+                            <br />
+                            @Model.invDetails[0].PurchaseOrderNo <br />
+                            Invoice: <b> #@Model.invDetails[0].InvoiceNo</b> <br />
+                            Terms: <b> Net @Model.invDetails[0].Term</b> <br />
+                            Invoice Date:  <b> @Model.invDetails[0].InvoiceDate</b> <br />
+                            Payment Due:   <b> @Model.invDetails[0].DueDate</b> <br />
+                            Amount Due (USD) <br />
+                            <b> $@Model.invDetails[0].TotalAmount</b>
+                        </td>
+                    </tr>
+                    <tr><td colspan="3"><br /></td></tr>
+                    <tr>
+                        <td>
+                            To: <br />
+                            @Model.invDetails[0].CustomerName <br />
+                            @Model.invDetails[0].CustomerContactAddress1 @Model.invDetails[0].CustomerContactAddress2<br />
+                            @Model.invDetails[0].CustomerContactCity, @Model.invDetails[0].CustomerContactState, @Model.invDetails[0].CustomerContactZip<br />
+                            @Model.invDetails[0].CustomerContactEmail<br />
+                            @Model.invDetails[0].CustomerContactPhone<br />
+
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table class="table" style="border:1px solid #eee; padding:5px;" id="subtable">
+                                <tr style="border:1px solid #eee; padding:5px;">
+                                    <th style="border:1px solid #eee; padding:5px;">DESCRIPTION</th>
+                                    <th style="border:1px solid #eee; padding:5px;">HOURS</th>
+                                    <th style="border:1px solid #eee; padding:5px;">RATE</th>
+                                    <th style="border:1px solid #eee; padding:5px; text-align:right;">AMOUNT</th>
+                                </tr>
+                                <tr style="border:1px solid #eee; padding:5px;">
+                                    <td style="border:1px solid #eee; padding:5px;">
+                                        @Model.invDetails[0].FirstName @Model.invDetails[0].MiddleName @Model.invDetails[0].LastName <br />
+                                        Title: @Model.invDetails[0].PositionTitle <br />
+                                        P.O#: @Model.invDetails[0].PurchaseOrderNo<br />
+                                        Job No: @Model.invDetails[0].PositionNumber<br />
+                                        Job Family: @Model.invDetails[0].PositionFamily<br />
+                                        Scope Variant: @Model.invDetails[0].PositionScopeVariant <br />
+                                        Service Date: @Model.invDetails[0].MonthStartDate - @Model.invDetails[0].MonthEndDate
+
+                                    </td>
+                                    <td style="border:1px solid #eee; padding:5px;">@Model.invDetails[0].RegularHours</td>
+                                    <td style="border:1px solid #eee; padding:5px;">$@Model.invDetails[0].Rate</td>
+                                    <td style="border:1px solid #eee; padding:5px;text-align:right;">$@Model.invDetails[0].TotalAmount</td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="3" style="border:1px solid #eee; padding:5px;text-align:right;">Total &nbsp; </td>
+                                    <td style="border:1px solid #eee; padding:5px;text-align:right;">$@Model.invDetails[0].TotalAmount</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr><td colspan="3"><br /></td></tr>
+                    <tr>
+                        <td colspan="3" style="text-align:left">Make all checks payable to @Model.CompanyName</td>
+                    </tr>
+                    <tr><td colspan="3"><br /></td></tr>
+                    <tr>
+                        <td colspan="3" style="text-align:center">Thank you for your business!</td>
+                    </tr>
+                    @*<tr>
+                        <td colspan="3" style="text-align:center"><a href="@Url.Action("UrlAsPDF","Home",new { id=Model.invDetails[0].InvoiceIdPK})">Print</a></td>
+                    </tr>*@
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

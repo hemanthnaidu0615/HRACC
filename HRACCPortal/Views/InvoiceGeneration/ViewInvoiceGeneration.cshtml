@@ -1,0 +1,411 @@
+﻿@*
+    @{
+        Layout = null;
+    }
+
+    <!DOCTYPE html>
+
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>ViewInvoiceGeneration</title>
+    </head>
+    <body>
+        <div>
+        </div>
+    </body>
+    </html>
+*@
+
+
+@model HRACCPortal.Models.InvoiceGenerationModel
+@{
+    ViewBag.Title = "ViewInvoiceGeneration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--begin::Vendor Stylesheets(used for this page only)-->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<!--end::Vendor Stylesheets-->
+<!--begin::Content-->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-invoicegeneration-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search InvoiceGenerations" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-invoicegeneration-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_invoicegeneration" id="btnpopup">Add InvoiceGeneration</button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_invoicegeneration">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-70px">Invoice Id</th>
+                            <th class="min-w-70px">Invoice Date</th>
+                            <th class="min-w-70px">Invoice Due Month</th>
+                            <th class="min-w-70px">Invoice Due Date</th>
+                            <th class="min-w-70px">Last Updated Date</th>
+                            <th class="min-w-100px  text-center">Actions</th>
+                            @*<th>&nbsp;</th>
+                                <th>&nbsp;</th>*@
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody class="fw-semibold text-gray-600">
+                        @{
+                            if (Model.InvoiceGenerationList.Count > 0)
+                            {
+                                foreach (var invoicegenerationItem in Model.InvoiceGenerationList)
+                                {
+                                    <tr>
+                                        <td>@invoicegenerationItem.InvoiceGenerationId</td>
+                                        <td>@invoicegenerationItem.InvoiceDate</td>
+                                        <td>@invoicegenerationItem.InvoiceMonth</td>
+                                        <td>@invoicegenerationItem.InvoiceDueDate</td>
+                                        <td>@invoicegenerationItem.DateUpdated</td>
+                                        <!--begin::Action=-->
+                                        <!--<td class="pe-0 text-end">
+                                            <a href="javascript:void(0)" class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                               id="@invoicegenerationItem.InvoiceGenerationId" onClick="EditInvoiceGeneration_Click(this.id)">
+                                                <span class="svg-icon svg-icon-3">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor" />
+                                                        <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                            </a>-->
+                                        <!--end::Menu-->
+                                        <!--end::Menu-->
+                                        <!--</td>-->
+                                        <td>
+                                            <a href="@Url.Action("ViewInvoice","Invoice",new { id=invoicegenerationItem.InvoiceGenerationId})" class="btn btn-primary">
+                                                Generate Invoice
+                                            </a>
+
+                                            <a href="@Url.Action("GetInvoice","Invoice",new { id=invoicegenerationItem.InvoiceGenerationId})" class="btn btn-primary">
+                                                Review and Send
+                                            </a>
+                                        </td>
+                                        <!--end::Action=-->
+                                        <!--------------------------------------testing----------------------------------------------------------------------=-->
+                                        <!--</td>-->
+                                        <!--------------------------------------testing----------------------------------------------------------------------=-->
+
+
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+        <!--begin::Modals-->
+        <!--begin::Modal - Customers - Add-->
+        <div class="modal fade" id="kt_modal_add_invoicegeneration" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog modal-dialog-centered mw-650px">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Form-->
+                    <form id="kt_modal_add_invoicegeneration_form" class="form" action="#" data-kt-redirect="@Url.Action("ViewInvoiceGeneration","InvoiceGeneration")">
+                        <!--begin::Modal header-->
+                        <div class="modal-header" id="kt_modal_add_customer_header">
+                            <!--begin::Modal title-->
+                            <h2 class="fw-bold">Invoice Generation Details</h2>
+                            <!--end::Modal title-->
+                            <!--begin::Close-->
+                            <div id="kt_modal_add_invoicegeneration_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--end::Modal header-->
+                        <!--begin::Card body-->
+                        <div class="modal-body py-10 px-lg-17">
+                            <!--begin::Scroll-->
+                            <div class="scroll-y me-n7 pe-7" id="kt_modal_add_invoicegeneration_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_invoicegeneration_header" data-kt-scroll-wrappers="#kt_modal_add_invoicegeneration_scroll" data-kt-scroll-offset="300px">
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-9 mb-7">
+                                <!--begin::Input group-->
+                                <div class="col-md-6 fv-row">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-semibold mb-2">
+                                        <span class="required">Invoice Date</span>
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    @*     <input type="text" class="form-control form-control-solid" placeholder="" name="Invoice Date" value="" />*@
+                                    <select class="form-control form-control-solid" name="InvoiceDate">
+                                        <option>Select Date</option>
+                                        <option>01</option>
+                                        <option>02</option>
+                                        <option>03</option>
+                                        <option>04</option>
+                                        <option>05</option>
+                                        <option>06</option>
+                                        <option>07</option>
+                                        <option>08</option>
+                                        <option>09</option>
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                        <option>13</option>
+                                        <option>14</option>
+                                        <option>15</option>
+                                        <option>16</option>
+                                        <option>17</option>
+                                        <option>18</option>
+                                        <option>19</option>
+                                        <option>20</option>
+                                        <option>21</option>
+                                        <option>22</option>
+                                        <option>23</option>
+                                        <option>24</option>
+                                        <option>25</option>
+                                        <option>26</option>
+                                        <option>27</option>
+                                        <option>28</option>
+                                        <option>29</option>
+                                        <option>30</option>
+                                        <option>31</option>
+
+                                    </select>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Input group-->
+                                <div class="col-md-6 fv-row">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-semibold mb-2">
+                                        <span class="required">Invoice Month</span>
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    @*   <input type="text" class="form-control form-control-solid" placeholder="" name="Invoice Month" value="" />*@
+                                    <select class="form-control form-control-solid" name="InvoiceMonth">
+                                        <option>Select Month</option>
+                                        <option>January</option>
+                                        <option>February</option>
+                                        <option>March</option>
+                                        <option>April</option>
+                                        <option>May</option>
+                                        <option>June</option>
+                                        <option>July</option>
+                                        <option>August</option>
+                                        <option>September</option>
+                                        <option>October</option>
+                                        <option>November</option>
+                                        <option>December</option>
+                                    </select>
+                                    <!--end::Input-->
+                                </div>
+                            </div>
+                            <div class="row g-9 mb-7">
+                                <div class="col-md-6 fv-row">
+                                    <!--begin::Label-->
+                                    <label class=" fs-6 fw-semibold mb-2">Invoice Due Date</label>
+                                    <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                        <input id="InvoiceDueDate" name="InvoiceDueDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" />
+                                        <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                    <!--end::Input-->
+                                </div>
+                                <!--end::Input-->
+                            </div>
+                        </div>
+
+                        <!--end::Card body-->
+                        <!--begin::Modal footer-->
+                        <div class="modal-footer flex-center">
+                            <!--begin::Button-->
+                            <button type="reset" id="kt_modal_add_invoicegeneration_cancel" class="btn btn-danger me-3">Discard</button>
+                            <!--end::Button-->
+                            <!--begin::Button-->
+                            <button type="submit" id="kt_modal_add_invoicegeneration_submit" class="btn btn-primary">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Modal footer-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+            </div>
+        </div>
+        <!--end::Modal - Customers - Add-->
+
+    </div>
+    <!--end::Content container-->
+</div>
+<!--end::Content-->
+
+@section scripts{
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/addinvoicegeneration.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <!--end::Custom Javascript-->
+    <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.querySelector('[data-kt-invoicegeneration-table-filter="search"]');
+            const table = document.getElementById('kt_customers_invoicegeneration');
+            const rows = table.querySelectorAll('tbody tr');
+
+            searchInput.addEventListener('keyup', function () {
+                const value = this.value.toLowerCase();
+                rows.forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+            row.style.display = rowText.includes(value) ? '' : 'none';
+                });
+            });
+        });
+    
+
+    new tempusDominus.TempusDominus(document.getElementById("InvoiceDate"), {
+    display: {
+    viewMode: "calendar",
+    components: {
+    decades: true,
+    year: true,
+    month: true,
+    date: true,
+    hours: false,
+    minutes: false,
+    seconds: false
+    }
+    }
+    });
+
+    new tempusDominus.TempusDominus(document.getElementById("DueDate"), {
+    display: {
+    viewMode: "calendar",
+    components: {
+    decades: true,
+    year: true,
+    month: true,
+    date: true,
+    hours: false,
+    minutes: false,
+    seconds: false
+    }
+    }
+    });
+
+    function EditInvoiceGeneration_Click(clicked) {
+    $.ajax({
+    type: "POST",
+    url: '/InvoiceGeneration/EditInvoiceGeneration',
+    data: '{id: ' + clicked + '}',
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (response) {
+    $("#btnpopup").click();
+    //$("input[name='CustomerName']").val(response.invoiceData.CustomerName);
+
+    $("input[name='InvoiceGenerationId']").val(response.invoicegenerationData.InvoiceGenerationId);
+    //$("input[name='ConsultantIdFK']").val(response.invoiceData.ConsultantIdFK);
+    //$("input[name='ConsultantPositionIdFK']").val(response.invoiceData.ConsultantPositionIdFK);
+    // $(".Consultant").val(response.invoiceData.ConsultantIdFK);
+    //  $(".Consultant").change().attr("disabled", "disabled");
+    // $(".ConsultantPosition").val(response.invoiceData.ConsultantPositionIdFK);
+    //  $(".ConsultantPosition").change().attr("disabled", "disabled");
+    //  $("input[name='InvoiceNumber']").val(response.invoiceData.InvoiceNumber).attr("disabled", "disabled");
+    //  $("input[name='Year']").val(response.invoiceData.Year).attr("disabled", "disabled");
+    $("input[name='InvoiceMonth']").val(response.invoiceData.Month).attr("disabled", "disabled");
+    $("input[name='InvoiceDate']").val(response.invoiceData.InvoiceDate).addClass('input-disabled').attr("disabled", "disabled");
+    $("input[name='InvoiceDueDate']").val(response.invoiceData.DueDate).attr("disabled", "disabled");
+    //$("input[name='RegularHours']").val(response.invoiceData.RegularHours);
+    //$("input[name='OvertimeHours']").val(response.invoiceData.OvertimeHours);
+    //$("input[name='InvoiceAmount']").val(response.invoiceData.InvoiceAmount);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+    submitButton.removeAttribute('data-kt-indicator');
+
+    console.log("Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+
+    Swal.fire({
+    text: "Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown,
+    icon: "error",
+    buttonsStyling: false,
+    confirmButtonText: "Ok, got it!",
+    customClass: {
+    confirmButton: "btn btn-primary"
+    }
+    });
+
+    }
+    });
+    }
+    </script>
+}

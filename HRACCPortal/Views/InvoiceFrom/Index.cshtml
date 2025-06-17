@@ -1,0 +1,227 @@
+﻿@model List<HRACCPortal.Models.InvoiceFromViewModel>
+
+@{
+    ViewBag.Title = "Invoices From Subcontractors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <div class="card">
+            <div class="card-header border-0 pt-6">
+                <div class="card-title">
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <input type="text" id="searchTable" class="form-control form-control-solid w-250px ps-15" placeholder="Search Invoices" />
+                    </div>
+                </div>
+                <div class="card-toolbar">
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_invoice">
+                            Add Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_invoices_table">
+                    <thead>
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="w-10px pe-2">#</th>
+                            <th class="min-w-125px">Subcontractor</th>
+                            <th class="min-w-125px">Invoice Number</th>
+                            <th class="min-w-125px">Amount</th>
+                            <th class="min-w-125px">Date</th>
+                            <th class="min-w-125px">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.SubcontractorName</td>
+                                <td>@item.InvoiceNumber</td>
+                                <td>@item.FormattedAmount</td>
+                                <td>@item.FormattedDate</td>
+                                <td>
+                                    <span class="badge @item.StatusClass">@item.PaymentStatus</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Invoice Modal -->
+<div class="modal fade" id="kt_modal_add_invoice" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content">
+            <form id="kt_modal_add_invoice_form" class="form" asp-action="Create" asp-controller="InvoiceFrom">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h2 class="fw-bold">Add New Invoice</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                        <span class="svg-icon svg-icon-1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body py-10 px-lg-17">
+                    <div class="scroll-y me-n7 pe-7">
+                        <!-- Subcontractor -->
+                        <div class="fv-row mb-7">
+                            <label class="required fs-6 fw-semibold mb-2">Subcontractor</label>
+                            <select asp-for="SubcontractorId" class="form-select form-select-solid"
+                                    data-control="select2" data-placeholder="Select subcontractor">
+                                <option value="">Select subcontractor...</option>
+                                @foreach (var item in ViewBag.Subcontractors)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SubcontractorId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Invoice Number -->
+                        <div class="fv-row mb-7">
+                            <label class="required fs-6 fw-semibold mb-2">Invoice Number</label>
+                            <input asp-for="InvoiceNumber" type="text" class="form-control form-control-solid" placeholder="INV-001" />
+                            <span asp-validation-for="InvoiceNumber" class="text-danger"></span>
+                        </div>
+
+                        <!-- Invoice Amount -->
+                        <div class="fv-row mb-7">
+                            <label class="required fs-6 fw-semibold mb-2">Amount</label>
+                            <input asp-for="InvoiceAmount" type="number" step="0.01" class="form-control form-control-solid" placeholder="0.00" />
+                            <span asp-validation-for="InvoiceAmount" class="text-danger"></span>
+                        </div>
+
+                        <!-- Invoice Date -->
+                        <div class="fv-row mb-7">
+                            <label class="required fs-6 fw-semibold mb-2">Invoice Date</label>
+                            <input asp-for="InvoiceDate" type="date" class="form-control form-control-solid" />
+                            <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Payment Status -->
+                        <div class="fv-row mb-7">
+                            <label class="required fs-6 fw-semibold mb-2">Payment Status</label>
+                            <select asp-for="PaymentStatus" class="form-select form-select-solid">
+                                <option value="">Select status...</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Partially Paid">Partially Paid</option>
+                                <option value="Not Paid">Not Paid</option>
+                            </select>
+                            <span asp-validation-for="PaymentStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="kt_modal_add_submit" class="btn btn-primary">
+                        <span class="indicator-label">Submit</span>
+                        <span class="indicator-progress">
+                            Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            const table = $('#kt_invoices_table').DataTable({
+                responsive: true,
+                searchDelay: 500,
+                columnDefs: [
+                    { orderable: false, targets: 0 }
+                ],
+                order: [[1, 'asc']]
+            });
+
+            // Search functionality
+            $('#searchTable').keyup(function () {
+                table.search($(this).val()).draw();
+            });
+
+            // Form submission handling
+            $('#kt_modal_add_invoice_form').submit(function (e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const submitButton = $('#kt_modal_add_submit');
+                submitButton.attr('data-kt-indicator', 'on');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#kt_modal_add_invoice').modal('hide');
+                            form[0].reset();
+                            Swal.fire({
+                                text: "Invoice created successfully!",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: { confirmButton: "btn btn-primary" }
+                            }).then(() => {
+                                location.reload(); // Refresh page to show new invoice
+                            });
+                        } else {
+                            // Show validation errors
+                            let errorHtml = '<ul>';
+                            $.each(response.errors, function (key, value) {
+                                errorHtml += '<li>' + value + '</li>';
+                            });
+                            errorHtml += '</ul>';
+
+                            Swal.fire({
+                                text: "Please fix the errors:",
+                                icon: "error",
+                                html: errorHtml,
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: { confirmButton: "btn btn-primary" }
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            text: "Sorry, looks like there are some errors detected, please try again.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok, got it!",
+                            customClass: { confirmButton: "btn btn-primary" }
+                        });
+                    },
+                    complete: function () {
+                        submitButton.removeAttr('data-kt-indicator');
+                    }
+                });
+            });
+        });
+    </script>
+}

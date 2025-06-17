@@ -1,0 +1,168 @@
+﻿@model IEnumerable<HRACCPortal.Models.DeliverableModel>
+
+@{
+    ViewBag.Title = "View Deliverables";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Plugin Styles -->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<!-- Custom Styling -->
+<style>
+    .section-heading {
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #1F177F;
+        margin-bottom: 25px;
+        padding-left: 15px;
+        padding: 12px 18px;
+        border-left: 5px solid #1F177F;
+        background-color: #F9FAFF;
+        border-radius: 0.42rem;
+        box-shadow: 0 4px 8px rgba(31, 23, 127, 0.08);
+    }
+
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #F4F6FA;
+        border-bottom: 1px solid #e4e6ef;
+    }
+
+    .card-title {
+        color: #1F177F;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .btn-success {
+        background: linear-gradient(45deg, #1F177F, #2c45d1);
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 8px 16px;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #2c45d1, #1F177F);
+        }
+
+    .btn-secondary {
+        border-radius: 8px;
+        padding: 8px 16px;
+    }
+
+    #deliverablesTable {
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(31, 23, 127, 0.06);
+    }
+
+        #deliverablesTable th {
+            background-color: #F4F6FA;
+            color: #1F177F;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        #deliverablesTable td {
+            vertical-align: middle;
+            font-size: 0.95rem;
+            color: #3f4254;
+        }
+
+        #deliverablesTable tbody tr:hover {
+            background-color: #f1faff;
+        }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 6px 10px;
+    }
+
+    .alert-warning {
+        border-radius: 10px;
+        background-color: #fff8db;
+        color: #856404;
+        padding: 15px;
+    }
+</style>
+
+<!-- Content -->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl mt-5">
+        <div class="section-heading">Previously Added Deliverables</div>
+
+        <div class="card">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <h3 class="card-title">Deliverables for Position</h3>
+                <div class="d-flex gap-2 mt-3 mt-md-0">
+                    <a href="/Position/ViewPosition" class="btn btn-secondary">Back to Positions</a>
+                    <a href="/Deliverable/AddDeliverables?positionId=@ViewBag.PositionId" class="btn btn-success">Add Deliverables</a>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+                @if (!Model.Any())
+                {
+                    <div class="alert alert-warning">No deliverables found for this position.</div>
+                }
+                else
+                {
+                    <table class="table align-middle table-row-dashed fs-6 gy-5" id="deliverablesTable">
+                        <thead>
+                            <tr>
+                                <th class="w-50px">S No</th>
+                                <th class="min-w-150px">Deliverable Number</th>
+                                <th class="min-w-300px">Deliverable Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int serial = 1;
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@serial</td>
+                                        <td>@item.DeliverableNumber</td>
+                                        <td>@item.DeliverableDescription</td>
+                                    </tr>
+                                    serial++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#deliverablesTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search deliverables..."
+                }
+            });
+        });
+    </script>
+}

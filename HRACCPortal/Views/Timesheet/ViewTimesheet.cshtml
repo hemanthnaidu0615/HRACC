@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "View Timesheet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <div class="card">
+            <div class="card-header border-0 pt-6">
+                <div class="card-title">
+                    <h2>View Timesheet</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Month:</label>
+                            <input type="text" id="month" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Year:</label>
+                            <input type="text" id="year" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="daysTable" class="mt-4">
+                    <h3 class="mb-3">Timesheet Details</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>SOW Deliverable</th>
+                                <th>Description</th>
+                                <th>Hours</th>
+                                <th>OT Hours</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="daysBody"></tbody>
+                    </table>
+                    <div class="text-end">
+                        <button type="button" id="editButton" class="btn btn-warning">Edit Timesheet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+    var timesheetId = '@ViewBag.TimesheetId';
+
+    function loadTimesheetDetails() {
+        $.get("/Timesheet/GetTimesheetDetails", { timesheetId: timesheetId }, function (response) {
+            if (!response.success) {
+                alert(response.message);
+                return;
+            }
+
+            $("#month").val(response.month); // Now shows month name
+            $("#year").val(response.year);
+
+            $("#daysBody").empty();
+            response.details.forEach(detail => {
+                $("#daysBody").append(`
+                    <tr>
+                        <td>${detail.WorkDate}</td>
+                        <td>${detail.SOWDeliverableNumber}</td>
+                        <td>${detail.Description}</td>
+                        <td>${detail.Hours}</td>
+                        <td>${detail.OTHours}</td>
+                    </tr>
+                `);
+            });
+
+            // Append total row
+            $("#daysBody").append(`
+                <tr>
+                    <td></td>
+                    <td><strong>Total:</strong> </td>
+                    <td>${response.totalHours}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>YTD Total:</strong></td>
+                    <td>${response.ytdTotal}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>YTD Hours Left:</strong> </td>
+                    <td>${response.ytdHoursLeft}</td>
+                </tr>
+            `);
+        });
+    }
+
+            loadTimesheetDetails();
+            $("#editButton").click(function () {
+                window.location.href = "/Timesheet/EditTimesheet?id=" + timesheetId;
+            });
+});
+
+
+    </script>
+}

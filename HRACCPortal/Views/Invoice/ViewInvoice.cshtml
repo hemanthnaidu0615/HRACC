@@ -1,0 +1,458 @@
+﻿@model HRACCPortal.Models.InvoiceModel
+@{
+    ViewBag.Title = "ViewInvoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--begin::Vendor Stylesheets(used for this page only)-->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+
+
+<!--end::Vendor Stylesheets-->
+<!--begin::Content-->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search Invoices" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_customer" id="btnpopup">Add Invoice</button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-100px">Invoice #</th>
+                            <th class="min-w-100px">Invoice Number</th>
+                            <th>Year - Month</th>
+                            <th>Invoice Date</th>
+                            <th>Due Date</th>
+                            <th>Regular Hours</th>
+                            <th>Overtime Hours</th>
+                            <th>Invoice Amount</th>
+                            <th>Last Updated Date</th>
+                            <th>Actions</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody class="fw-semibold text-gray-600">
+                        @{
+                            if (Model.InvoiceList.Count > 0)
+                            {
+                                foreach (var invoiceItem in Model.InvoiceList)
+                                {
+                                    <tr>
+                                        <td>@invoiceItem.InvoiceIdPK</td>
+                                        <td>@invoiceItem.InvoiceNumber</td>
+                                        <td>@invoiceItem.Year - @invoiceItem.Month</td>
+                                        <td>@invoiceItem.InvoiceDate</td>
+                                        <td>@invoiceItem.DueDate</td>
+                                        <td>@invoiceItem.RegularHours</td>
+                                        <td>@invoiceItem.OvertimeHours</td>
+                                        <td>@invoiceItem.InvoiceAmount</td>
+                                        <td>@invoiceItem.DateUpdated</td>
+                                        <!--begin::Action=-->
+                                        <td class="pe-0 text-end">
+                                            <a href="javascript:void(0)" class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                               id="@invoiceItem.InvoiceIdPK" onClick="EditPosition_Click(this.id)">
+                                                <span class="svg-icon svg-icon-3">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor" />
+                                                        <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                            <!--end::Menu-->
+                                            <!--end::Menu-->
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("GetInvoice","Invoice",new { id=invoiceItem.InvoiceIdPK})" class="btn btn-primary">
+                                                View
+                                            </a>
+                                        </td>
+                                        <!--end::Action=-->
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+        <!--begin::Modals-->
+        <!--begin::Modal - Customers - Add-->
+        <div class="modal fade" id="kt_modal_add_customer" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog modal-dialog-centered mw-650px">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Form-->
+                    <form id="kt_modal_add_customer_form" class="form" action="#" data-kt-redirect="@Url.Action("ViewInvoice","Invoice")">
+                        <!--begin::Modal header-->
+                        <div class="modal-header" id="kt_modal_add_customer_header">
+                            <!--begin::Modal title-->
+                            <h2 class="fw-bold">Invoice Details</h2>
+                            <!--end::Modal title-->
+                            <!--begin::Close-->
+                            <div id="kt_modal_add_customer_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--end::Modal header-->
+                        <!--begin::Card body-->
+                        <div class="modal-body py-10 px-lg-17">
+                            <!--begin::Scroll-->
+                            <div class="scroll-y me-n7 pe-7" id="kt_modal_add_customer_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_customer_header" data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Invoice Number</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="hidden" class="form-control form-control-solid" name="InvoiceIdPK" value="0" />
+                                        <input type="hidden" class="form-control form-control-solid" name="ConsultantIdFK" value="0" />
+                                        <input type="hidden" class="form-control form-control-solid" name="ConsultantPositionIdFK" value="0" />
+                                        <input type="text" class="form-control form-control-solid " placeholder="" name="InvoiceNumber" value="" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <!--begin::Input group-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Year</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @* <input type="text" class="form-control form-control-solid" placeholder="" name="Year" value="" />*@
+                                        <select class="form-control form-control-solid" name="Year">
+                                            <option value="">Select Year</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2026">2026</option>
+                                            <option value="2027">2027</option>
+                                            <option value="2028">2028</option>
+                                            <option value="2029">2029</option>
+                                            <option value="2030">2030</option>
+                                            <option value="2031">2031</option>
+                                            <option value="2032">2032</option>
+                                            <option value="2033">2033</option>
+                                            <option value="2034">2034</option>
+                                            <option value="2035">2035</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                    <!--end::Input group-->
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Month</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @*<input type="text" class="form-control form-control-solid" placeholder="" name="Month" value="" />*@
+                                        <select class="form-control form-control-solid" name="Month">
+                                            <option value="">Select Month</option>
+                                            <option value="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class=" fs-6 fw-semibold mb-2">Invoice Date</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="InvoiceDate" name="InvoiceDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" />
+                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                <i class="fas fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class=" fs-6 fw-semibold mb-2">Due Date</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="DueDate" name="DueDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" />
+                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                <i class="fas fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Select Consultant</span>
+                                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"></i>
+                                        </label>
+                                        <!--end::Label
+                                        <!--begin::Input-->
+                                        <select name="Consultant" aria-label="Select a Consultant" data-control="select2" data-placeholder="Select a Consultant..." data-dropdown-parent="#kt_modal_add_customer" class="form-select form-select-solid fw-bold Consultant">
+                                            <option value="">Select a Consultant...</option>
+                                            @foreach (var item in Model.ddlConsultantList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Select Consultant Position</span>
+                                            <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip"></i>
+                                        </label>
+                                        <!--end::Label
+                                        <!--begin::Input-->
+                                        <select name="ConsultantPosition" aria-label="Select a Consultant Position" data-control="select2" data-placeholder="Select a Consultant Position..." data-dropdown-parent="#kt_modal_add_customer" class="form-select form-select-solid fw-bold ConsultantPosition">
+                                            <option value="">Select a Consultant Position...</option>
+                                            @foreach (var item in Model.ddlConsultantPositionDetailsList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">Regular Hours</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="RegularHours" />
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">Overtime Hours</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="OvertimeHours" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">Invoice Amount</label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="InvoiceAmount" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Card body-->
+                        <!--begin::Modal footer-->
+                        <div class="modal-footer flex-center">
+                            <!--begin::Button-->
+                            <button type="reset" id="kt_modal_add_customer_cancel" class="btn btn-danger me-3">Discard</button>
+                            <!--end::Button-->
+                            <!--begin::Button-->
+                            <button type="submit" id="kt_modal_add_customer_submit" class="btn btn-primary">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Modal footer-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+            </div>
+        </div>
+        <!--end::Modal - Customers - Add-->
+
+    </div>
+    <!--end::Content container-->
+</div>
+<!--end::Content-->
+
+@section scripts{
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/addinvoice.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <!--end::Custom Javascript-->
+    <script>
+        $(document).ready(function () {
+            if (!$.fn.DataTable.isDataTable('#kt_customers_table')) {
+                $('#kt_customers_table').DataTable({
+                    "pageLength": 10,
+                    "lengthChange": true, // enable dropdown, but it's now placed below
+                    "searching": false,   // removes default search bar
+                    "ordering": true,
+                    "pagingType": "simple_numbers",
+                    "language": {
+                        "emptyTable": "No data available in table"
+                    },
+                    "dom": 't<"datatable-footer"lip>' // dropdown + info + pagination below
+                });
+            }
+        });
+
+        new tempusDominus.TempusDominus(document.getElementById("InvoiceDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+
+        new tempusDominus.TempusDominus(document.getElementById("DueDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+
+        function EditPosition_Click(clicked) {
+            $.ajax({
+                type: "POST",
+                url: '/Invoice/EditInvoice',
+                data: '{id: ' + clicked + '}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#btnpopup").click();
+                    //$("input[name='CustomerName']").val(response.invoiceData.CustomerName);
+
+                    $("input[name='InvoiceIdPK']").val(response.invoiceData.InvoiceIdPK);
+                    //$("input[name='ConsultantIdFK']").val(response.invoiceData.ConsultantIdFK);
+                    //$("input[name='ConsultantPositionIdFK']").val(response.invoiceData.ConsultantPositionIdFK);
+                    $(".Consultant").val(response.invoiceData.ConsultantIdFK);
+                    $(".Consultant").change().attr("disabled", "disabled");
+                    $(".ConsultantPosition").val(response.invoiceData.ConsultantPositionIdFK);
+                    $(".ConsultantPosition").change().attr("disabled", "disabled");
+                    $("input[name='InvoiceNumber']").val(response.invoiceData.InvoiceNumber);
+                    $("select[name='Year']").val(response.invoiceData.Year).attr("disabled", "disabled");
+                    $("select[name='Month']").val(response.invoiceData.Month).attr("disabled", "disabled");
+                    $("input[name='InvoiceDate']").val(response.invoiceData.InvoiceDate).addClass('input-disabled').attr("disabled", "disabled");
+                    $("input[name='DueDate']").val(response.invoiceData.DueDate).attr("disabled", "disabled");
+                    $("input[name='RegularHours']").val(response.invoiceData.RegularHours);
+                    $("input[name='OvertimeHours']").val(response.invoiceData.OvertimeHours);
+                    $("input[name='InvoiceAmount']").val(response.invoiceData.InvoiceAmount);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    submitButton.removeAttribute('data-kt-indicator');
+
+                    console.log("Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+
+                    Swal.fire({
+                        text: "Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    });
+
+                }
+            });
+        }
+
+       
+
+
+    </script>
+}

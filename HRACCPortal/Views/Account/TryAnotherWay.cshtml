@@ -1,0 +1,149 @@
+﻿@model HRACCPortal.Models.ResetPasswordModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reset Password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 250px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(150%);
+            transition: transform 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        .toast-show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            background: #28a745;
+        }
+
+        .toast-error {
+            background: #dc3545;
+        }
+
+        .toast-info {
+            background: #17a2b8;
+        }
+
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            /*            background: linear-gradient(to right, #ff7e5f, #feb47b);*/
+            background-color: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: #333;
+        }
+
+        .form-container {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .form-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #6a11cb;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            text-align: left;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+            .form-group input:focus, .form-group select:focus {
+                border-color: #6a11cb;
+                box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+            }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                background: linear-gradient(90deg, #2575fc, #6a11cb);
+            }
+
+        .btn-secondary {
+            background: transparent;
+            color: #6a11cb;
+            border: 2px solid #6a11cb;
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background: #6a11cb;
+                color: #fff;
+            }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow-lg rounded border-primary" style="max-width: 400px; width: 100%;">
+            <h3 class="text-center text-primary">Need Help?</h3>
+            <p class="text-center">If Your Account is Locked or </p>
+            <p class="text-center">If you forgot password , Security Questions Contact Administrator</p>
+            <p class="text-center">
+                <strong>Email:</strong>
+                <a href="mailto:info@h3usystems.com" class="text-primary">info@h3usystems.com</a>
+            </p>
+
+            <div class="text-center">
+                <a href="@Url.Action("Login", "Account")" class="btn btn-primary w-100">Back to Login</a>
+            </div>
+        </div>
+    </div>
+</body>

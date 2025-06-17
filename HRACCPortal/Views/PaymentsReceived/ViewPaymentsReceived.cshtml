@@ -1,0 +1,483 @@
+﻿
+@model HRACCPortal.Models.PaymentsReceivedModel
+@{
+    ViewBag.Title = "ViewConsultants";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .required::after {
+        content: " * ";
+        color: red;
+        font-size: 20px;
+    }
+</style>
+
+<!--begin::Vendor Stylesheets(used for this page only)-->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<!--end::Vendor Stylesheets-->
+<!--begin::Content-->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search PaymentsReceived" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-paymentsreceived-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_paymentsreceived" id="btnpopup">Add PaymentsReceived</button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            @*  <th class="min-w-100px">Invoice Number</th>
+                                <th class="min-w-100px">Invoice Amount</th> *@
+                            <th class="min-w-100px">Invoice #</th>
+                            <th class="min-w-100px">Invoice Number</th>
+                            <th>Invoice Amount</th>
+
+                            <th>Invoice DueDate</th>
+                            <th>Customer Name</th>
+                            <th>Last Updated Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody class="fw-semibold text-gray-600">
+                        @{
+                            if (Model.PaymentsReceivedList.Count > 0)
+                            {
+                                foreach (var paymentsreceivedItem in Model.PaymentsReceivedList)
+                                {
+                                    <tr>
+                                        <td>@paymentsreceivedItem.PaymentsReceivedId</td>
+
+                                        <td>@paymentsreceivedItem.InvoiceNumber</td>
+                                        <td>@paymentsreceivedItem.InvoiceAmount</td>
+                                        <td>@paymentsreceivedItem.InvoiceDueDate</td>
+
+                                        <td>@paymentsreceivedItem.CustomerName</td>
+                                        <td>@paymentsreceivedItem.DateUpdated</td>
+                                        <td>@paymentsreceivedItem.Status</td>
+
+
+
+                                        <!--begin::Action=-->
+                                        <td class="pe-0 text-end">
+
+                                            @if (paymentsreceivedItem.Status == "Pending" || paymentsreceivedItem.Status == "Partially Received")
+                                            {
+
+                                                @*<a class="btn btn-primary" href="@Url.Action("ManageCheques", "PaymentsReceived",
+                                                               new { paymentId = paymentsreceivedItem.PaymentsReceivedId })">
+                                                            Manage Cheques
+                                                        </a>*@
+                                                <a href="@Url.Action("ManageCheques", "PaymentsReceived", new { paymentId = paymentsreceivedItem.PaymentsReceivedId })"
+                                                   class="btn btn-outline-primary d-inline-flex align-items-center px-3 py-1 rounded-pill shadow-sm"
+                                                   style="font-size: 14px; font-weight: 500;">
+                                                    <i class="bi bi-pencil-square me-2" style="font-size: 16px;"></i>
+                                                    Manage Cheques
+                                                </a>
+
+                                            }
+                                            else if (paymentsreceivedItem.Status == "Received")
+                                            {
+                                                <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill bg-success text-white" style="font-size: 14px;">
+                                                    <i class="bi bi-check-circle-fill me-2" style="font-size: 16px;"></i>
+                                                    Payment Completed
+                                                </div>
+
+                                            }
+
+                                            <a class="btn btn-primary" href="@Url.Action("ChequeReport", "PaymentsReceived", new { paymentId = paymentsreceivedItem.PaymentsReceivedId })">View Payment</a>
+
+                                            <a href="javascript:void(0)" class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                               id="@paymentsreceivedItem.PaymentsReceivedId" onClick="EditPaymentsReceived_Click(this.id)">
+                                                <span class="svg-icon svg-icon-3">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor" />
+                                                        <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                            <!--end::Menu-->
+                                        </td>
+                                        <!--end::Action=-->
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+        <!--begin::Modals-->
+        <!--begin::Modal - Customers - Add-->
+        <div class="modal fade" id="kt_modal_add_paymentsreceived" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog modal-dialog-centered mw-650px">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Form-->
+                    <form id="kt_modal_add_paymentsreceived_form" class="form" action="#" data-kt-redirect="@Url.Action("ViewPaymentsReceived","PaymentsReceived")">
+                        <!--begin::Modal header-->
+                        <div class="modal-header" id="kt_modal_add_paymentsreceived_header">
+                            <!--begin::Modal title-->
+                            <h2 class="fw-bold">PaymentsReceived Details</h2>
+                            <!--end::Modal title-->
+                            <!--begin::Close-->
+                            <div id="kt_modal_add_paymentsreceived_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--end::Modal header-->
+                        <!--begin::Card body-->
+                        <div class="modal-body py-10 px-lg-17">
+                            <!--begin::Scroll-->
+                            <div class="scroll-y me-n7 pe-7" id="kt_modal_add_paymentsreceived_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_paymentsreceived_header" data-kt-scroll-wrappers="#kt_modal_add_paymentsreceived_scroll" data-kt-scroll-offset="300px">
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Input group-->
+                                        <div class="d-flex flex-column mb-7 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="fs-6 fw-semibold mb-2">
+                                                <span class="required">Select Customer</span>
+                                                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Country of origination"></i>
+                                            </label>
+                                            <!--end::Label
+                                            <!--begin::Input-->
+                                            <select name="CustomerName" aria-label="Select a Customer Name" data-control="select2" data-placeholder="Select a Customer..." data-dropdown-parent="#kt_modal_add_paymentsreceived" class="form-select form-select-solid fw-bold CustomerName">
+                                                <option value="">Select a Customer...</option>
+                                                @foreach (var item in Model.ddlCustomerList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            </select>
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Invoice Number</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="hidden" class="form-control form-control-solid" name="PaymentsReceivedId" value="0" />
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="InvoiceNumber" value="" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Invoice Amount</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="InvoiceAmount" />
+
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Invoice DueDate</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="InvoiceDueDate" />
+
+                                        <!--end::Input-->
+                                    </div>
+
+                                    @* <div class="col-md-6 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="required fs-6 fw-semibold mb-2">Invoice DueDate</label>
+                                            <!--end::Label-->
+                                            <!--begin::Input-->
+                                            <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                                <input id="InvoiceDueDate" name="InvoiceDueDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" readonly="readonly" />
+                                                <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                    <i class="fas fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                            <!--end::Input-->
+                                        </div> *@
+
+
+                                </div>
+
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-4 fv-row">
+                                        <label class="fs-6 fw-semibold mb-2">Cheque Number</label>
+                                        <input type="text" class="form-control form-control-solid" name="ChequeNumber" />
+                                    </div>
+
+                                    <div class="col-md-4 fv-row">
+                                        <label class="fs-6 fw-semibold mb-2">Cheque Amount</label>
+                                        <input type="number" class="form-control form-control-solid" name="ChequeAmount" />
+                                    </div>
+
+                                    <div class="col-md-4 fv-row">
+                                        <label class="fs-6 fw-semibold mb-2">Date Received</label>
+                                        <input type="date" class="form-control form-control-solid" name="DateReceived" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Card body-->
+                        <!--begin::Modal footer-->
+                        <div class="modal-footer flex-center">
+                            <!--begin::Button-->
+                            <button type="reset" id="kt_modal_add_paymentsreceived_cancel" class="btn btn-danger me-3">Discard</button>
+                            <!--end::Button-->
+                            <!--begin::Button-->
+                            <button type="submit" id="kt_modal_add_paymentsreceived_submit" class="btn btn-primary">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Modal footer-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+
+
+            </div>
+        </div>
+        <!--end::Modal - Customers - Add-->
+
+    </div>
+    <!--end::Content container-->
+</div>
+
+<div class="modal fade" id="chequeModal" tabindex="-1" aria-labelledby="chequeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="addChequeForm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Cheque</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="PaymentId" name="PaymentId" />
+
+                    <div class="mb-3">
+                        <label>Cheque Number</label>
+                        <input type="text" class="form-control" name="ChequeNumber" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>Cheque Amount</label>
+                        <input type="number" class="form-control" name="ChequeAmount" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>Date Received</label>
+                        <input type="date" class="form-control" name="DateReceived" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Cheque</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--end::Content-->
+
+@section scripts{
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/addpaymentsreceived.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <!--end::Custom Javascript-->
+    <script>
+
+
+
+
+        new tempusDominus.TempusDominus(document.getElementById("InactiveDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+        new tempusDominus.TempusDominus(document.getElementById("InvoiceDueDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+
+        function EditPaymentsReceived_Click(clicked) {
+            $.ajax({
+                type: "POST",
+                url: '/PaymentsReceived/EditPaymentsReceived',
+                data: '{id: ' + clicked + '}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#btnpopup").click();
+                    //$("input[name='CustomerName']").val(response.positionData.CustomerName);
+                    $(".CustomerName").val(response.paymentsreceivedData.CustomerIdFK);
+                    $(".CustomerName").change();
+                    $("input[name='PaymentsReceivedId']").val(response.paymentsreceivedData.PaymentsReceivedId);
+                    $("input[name='CustomerIdFK']").val(response.paymentsreceivedData.CustomerIdFK);
+                    $("input[name='InvoiceNumber']").val(response.paymentsreceivedData.InvoiceNumber).attr("disabled", "disabled");
+                    $("input[name='InvoiceAmount']").val(response.paymentsreceivedData.InvoiceAmount);
+                    $("input[name='InvoiceDueDate']").val(response.paymentsreceivedData.InvoiceDueDate);
+                    // $("input[name='PositionScopeVariant']").val(response.positionData.PositionScopeVariant);
+                    // $("input[name='PurchaseOrderNo']").val(response.positionData.PurchaseOrderNo).addClass('input-disabled');
+                    // $("input[name='PurchaseRequisitionNo']").val(response.positionData.PurchaseRequisitionNo);
+                    $("input[name='ChequeNumber']").val(response.paymentsreceivedData.ChequeNumber);
+                    $("input[name='ChequeAmount']").val(response.paymentsreceivedData.ChequeAmount);
+                    $("input[name='DateReceived']").val(response.paymentsreceivedData.DateReceived);
+
+
+                    if (response.paymentsreceivedData.Status == true) {
+                        $("#Status").prop('checked', true);
+                        $("#hide_inactivedetails").hide();
+                    }
+                    if (response.paymentsreceivedData.Status == false) {
+                        $("#Status").prop('checked', false);
+                        $("#hide_inactivedetails").show();
+                    }
+
+                    $("input[name='InactiveDate']").val(response.paymentsreceivedData.InactiveDate);
+                    $("input[name='InactiveReason']").val(response.paymentsreceivedData.InactiveReason);
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    submitButton.removeAttribute('data-kt-indicator');
+
+                    console.log("Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+
+                    Swal.fire({
+                        text: "Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    });
+
+                }
+            });
+
+
+
+        }
+        $(document).ready(function () {
+            $("#Status").click(function () {
+                if ($(this).is(":checked")) {
+
+                    $("#hide_inactivedetails").hide();
+                    $("#divreason").hide();
+                    $("#divdate").hide();
+                }
+                else {
+
+                    $("#hide_inactivedetails").show();
+                    $("#divreason").show();
+                    $("#divdate").show();
+                }
+            });
+        });
+        $("#InactiveReason").blur(function () {
+            if ($(this).val() == "") {
+                $("#divreason").show();
+            } else {
+                $("#divreason").hide();
+            }
+        });
+
+        $("#InactiveDate").blur(function () {
+            if ($(this).val() == "") {
+                $("#divdate").show();
+            } else {
+                $("#divdate").hide();
+            }
+        });
+    </script>
+}

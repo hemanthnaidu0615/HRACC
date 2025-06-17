@@ -1,0 +1,682 @@
+﻿@model HRACCPortal.Models.PositionModel
+@{
+    ViewBag.Title = "ViewConsultants";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .required::after {
+        content: " * ";
+        color: red;
+        font-size: 20px;
+    }
+</style>
+
+<!--begin::Vendor Stylesheets(used for this page only)-->
+<link href="~/Content/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+
+<!--end::Vendor Stylesheets-->
+<!--begin::Content-->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <!--begin::Card title-->
+                <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                        <input type="text" data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search Positions" />
+                    </div>
+                    <!--end::Search-->
+                </div>
+                <!--begin::Card title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_customer" id="btnpopup">Add Position</button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body pt-0">
+                <!--begin::Table-->
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                    <!--begin::Table head-->
+                    <thead>
+                        <!--begin::Table row-->
+                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-122px">Position #</th>
+                            <th class="min-w-122px">Position Number</th>
+                            <th class="min-w-122px">Position Family</th>
+                            <th class="min-w-122px">Scope Variant</th>
+                            <th class="min-w-122px">Order No</th>
+                            <th class="min-w-122px">Customer Name</th>
+                            <th class="min-w-122px">Status</th>
+                            <th class="min-w-122px">Last Updated Date</th>
+                            <th >Actions</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        <!--end::Table row-->
+                    </thead>
+                    <!--end::Table head-->
+                    <!--begin::Table body-->
+                    <tbody class="fw-semibold text-gray-600">
+                        @{
+                            if (Model.PositionList.Count > 0)
+                            {
+                                foreach (var positionItem in Model.PositionList)
+                                {
+                                    <tr>
+                                        <td>@positionItem.PositionIdPK</td>
+                                        <td>@positionItem.PositionNumber</td>
+                                        <td>@positionItem.PositionFamily</td>
+                                        <td>@positionItem.PositionScopeVariant</td>
+                                        <td>@positionItem.PurchaseOrderNo</td>
+                                        <td>@positionItem.CustomerName</td>
+                                        <td>
+                                            @if (positionItem.Status == true)
+                                            {
+                                                <span class="badge badge-light-success mb-1">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-light-danger mb-1">Inactive</span>
+                                            }
+                                        </td>
+                                        <td>@positionItem.DateUpdated</td>
+                                        <!--begin::Action=-->
+                                        <td class="pe-0 text-end">
+
+                                            <a href="/Deliverable/AddDeliverables?positionId=@positionItem.PositionIdPK" class="btn btn-primary">Add Deliverables</a>
+
+                                            <a href="/Deliverable/ViewDeliverables?positionId=@positionItem.PositionIdPK" class="btn btn-primary">View Deliverables</a>
+
+                                            <a href="javascript:void(0)" class="btn btn-icon btn-active-light-primary w-30px h-30px me-3"
+                                               id="@positionItem.PositionIdPK" onClick="EditPosition_Click(this.id)">
+                                                <span class="svg-icon svg-icon-3">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor" />
+                                                        <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                            <!--end::Menu-->
+                                        </td>
+                                        <!--end::Action=-->
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                    <!--end::Table body-->
+                </table>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+        <!--begin::Modals-->
+        <!--begin::Modal - Customers - Add-->
+        <div class="modal fade" id="kt_modal_add_customer" tabindex="-1" aria-hidden="true">
+            <!--begin::Modal dialog-->
+            <div class="modal-dialog modal-dialog-centered mw-650px">
+                <!--begin::Modal content-->
+                <div class="modal-content">
+                    <!--begin::Form-->
+                    <form id="kt_modal_add_customer_form" class="form" action="#" data-kt-redirect="@Url.Action("ViewPosition","Position")">
+                        <!--begin::Modal header-->
+                        <div class="modal-header" id="kt_modal_add_customer_header">
+                            <!--begin::Modal title-->
+                            <h2 class="fw-bold">Position Details</h2>
+                            <!--end::Modal title-->
+                            <!--begin::Close-->
+                            <div id="kt_modal_add_customer_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--end::Modal header-->
+                        <!--begin::Card body-->
+                        <div class="modal-body py-10 px-lg-17">
+                            <!--begin::Scroll-->
+                            <div class="scroll-y me-n7 pe-7" id="kt_modal_add_customer_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_customer_header" data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Input group-->
+                                        <div class="d-flex flex-column mb-7 fv-row">
+                                            <!--begin::Label-->
+                                            <label class="fs-6 fw-semibold mb-2">
+                                                <span class="required">Select Customer</span>
+                                                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Country of origination"></i>
+                                            </label>
+                                            <!--end::Label
+                                            <!--begin::Input-->
+                                            <select name="CustomerName" aria-label="Select a Customer Name" data-control="select2" data-placeholder="Select a Customer..." data-dropdown-parent="#kt_modal_add_customer" class="form-select form-select-solid fw-bold CustomerName">
+                                                <option value="">Select a Customer...</option>
+                                                @foreach (var item in Model.ddlCustomerList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            </select>
+                                            <!--end::Input-->
+                                        </div>
+                                        <!--end::Input group-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Position Number</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="hidden" class="form-control form-control-solid" name="PositionIdPK" value="0" />
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="PositionNumber" value="" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Position Title</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @*<input type="text" class="form-control form-control-solid" placeholder="" name="PositionTitle" />*@
+                                        <select class="form-control form-control-solid" name="PositionTitle">
+                                            <option value="">Select Position Title</option>
+                                            <option value="Applications Architect">Applications Architect</option>
+                                            <option value="Applications Development Analyst">Applications Development Analyst</option>
+                                            <option value="Asset Management Administrator">Asset Management Administrator</option>
+                                            <option value="Asset Manager">Asset Manager</option>
+                                            <option value="Business Analyst">Business Analyst</option>
+                                            <option value="Basis/Ale Technical Consultant">Basis/Ale Technical Consultant</option>
+                                            <option value="Business Continuance Specialist">Business Continuance Specialist</option>
+                                            <option value="Business Intelligence Architect">Business Intelligence Architect</option>
+                                            <option value="Business Management Specialist">Business Management Specialist</option>
+                                            <option value="Business Process Consultant">Business Process Consultant</option>
+                                            <option value="Client Technologies Analyst">Client Technologies Analyst</option>
+                                            <option value="Client Technologies Technician">Client Technologies Technician</option>
+                                            <option value="Customer Support Analyst">Customer Support Analyst</option>
+                                            <option value="Customer Support Technician">Customer Support Technician</option>
+                                            <option value="Computer Operator">Computer Operator</option>
+                                            <option value="Chief Sourcing Officer">Chief Sourcing Officer</option>
+                                            <option value="Contracts Manager">Contracts Manager</option>
+                                            <option value="Configuration Management Analyst">Configuration Management Analyst</option>
+                                            <option value="Customer Service Hotline Representative">Customer Service Hotline Representative</option>
+                                            <option value="Director Systems and Programming">Director Systems and Programming</option>
+                                            <option value="Database Manager">Database Manager</option>
+                                            <option value="Data Architect">Data Architect</option>
+                                            <option value="Data Modeler">Data Modeler</option>
+                                            <option value="Database Analyst">Database Analyst</option>
+                                            <option value="Database Administrator">Database Administrator</option>
+                                            <option value="Director, Network Operations">Director, Network Operations</option>
+                                            <option value="Director, Data Center Operations">Director, Data Center Operations</option>
+                                            <option value="Director, Electronic Commerce">Director, Electronic Commerce</option>
+                                            <option value="Director, Data Warehouse">Director, Data Warehouse</option>
+                                            <option value="Data Warehouse Analyst">Data Warehouse Analyst</option>
+                                            <option value="Data Warehouse Administrator">Data Warehouse Administrator</option>
+                                            <option value="Decision Support Specialist">Decision Support Specialist</option>
+                                            <option value="Decision Support Administrator">Decision Support Administrator</option>
+                                            <option value="Director, HR/IT">Director, HR/IT</option>
+                                            <option value="Documentation Specialist/Technical Writer">Documentation Specialist/Technical Writer</option>
+                                            <option value="Director, IT Risk and Compliance">Director, IT Risk and Compliance</option>
+                                            <option value="Data Security Specialist">Data Security Specialist</option>
+                                            <option value="Director, Enterprise Architecture">Director, Enterprise Architecture</option>
+                                            <option value="Director, Business Relationships">Director, Business Relationships</option>
+                                            <option value="Director, Program Management">Director, Program Management</option>
+                                            <option value="Enterprise Application Integration (EA) Engineer">Enterprise Application Integration (EA)Engineer</option>
+                                            <option value="Electronic Commerce Analyst">Electronic Commerce Analyst</option>
+                                            <option value="EDI Specialist">EDI Specialist</option>
+                                            <option value="ERP Team Lead">ERP Team Lead</option>
+                                            <option value="ERP Team Member">ERP Team Member</option>
+                                            <option value="ERP Configurer">ERP Configurer</option>
+                                            <option value="ERP Programmer/Analyst">ERP Programmer/Analyst</option>
+                                            <option value="ERP Systems Support Specialist">ERP Systems Support Specialist</option>
+                                            <option value="ERP Systems Administrator">ERP Systems Administrator</option>
+                                            <option value="Enterprise Architect">Enterprise Architect</option>
+                                            <option value="Finance/Administration Specialist">Finance/Administration Specialist</option>
+                                            <option value="Internet/Web Architect">Internet/Web Architect</option>
+                                            <option value="Internet/Web Engineer">Internet/Web Engineer</option>
+                                            <option value="Internet/Web Systems Administrator">Internet/Web Systems Administrator</option>
+                                            <option value="Mgmt. Quality Assurance">Mgmt. Quality Assurance</option>
+                                            <option value="Mgmt. Applications Development">Mgmt. Applications Development</option>
+                                            <option value="Mgmt. Internet Operations">Mgmt. Internet Operations</option>
+                                            <option value="Manager, Technology Research">Manager, Technology Research</option>
+                                            <option value="Manager, Client Technologies">Manager, Client Technologies</option>
+                                            <option value="Mgmt. Customer Support">Mgmt. Customer Support</option>
+                                            <option value="Manager, Electronic Commerce">Manager, Electronic Commerce</option>
+                                            <option value="Manager, Data Warehouse">Manager, Data Warehouse</option>
+                                            <option value="Manager, Decision Support">Manager, Decision Support</option>
+                                            <option value="Manager, CRM Technology">Manager, CRM Technology</option>
+                                            <option value="Manager, Network Operations">Manager, Network Operations</option>
+                                            <option value="Manager, Customer Service Hotline">Manager, Customer Service Hotline</option>
+                                            <option value="Manager, Technical Product Support">Manager, Technical Product Support</option>
+                                            <option value="Manager, Business Continuance">Manager, Business Continuance</option>
+                                            <option value="Manager, Product Development">Manager, Product Development</option>
+                                            <option value="Manager, Vendor Relationships">Manager, Vendor Relationships</option>
+                                            <option value="Manager, Outsourcing Contracts">Manager, Outsourcing Contracts</option>
+                                            <option value="Manager, Capacity Planning">Manager, Capacity Planning</option>
+                                            <option value="Manager, Production Support">Manager, Production Support</option>
+                                            <option value="Manager, IT Finance">Manager, IT Finance</option>
+                                            <option value="Manager, IT Audit">Manager, IT Audit</option>
+                                            <option value="Network Architect">Network Architect</option>
+                                            <option value="Network Engineer">Network Engineer</option>
+                                            <option value="Network Analyst">Network Analyst</option>
+                                            <option value="Network Administrator">Network Administrator</option>
+                                            <option value="Network Technician">Network Technician</option>
+                                            <option value="Web Applications Programmer">Web Applications Programmer</option>
+                                            <option value="Web Designer">Web Designer</option>
+                                            <option value="Webmaster">Webmaster</option>
+                                            <option value="Systems Analyst">Systems Analyst</option>
+                                            <option value="Quality Engineering Consultant">Quality Engineering Consultant</option>
+                                            <option value="Quality Assurance Analyst">Quality Assurance Analyst</option>
+                                            <option value="Technology Research Analyst">Technology Research Analyst</option>
+                                            <option value="Technical Product Support Analyst">Technical Product Support Analyst</option>
+                                            <option value="Technical Product Support Specialist">Technical Product Support Specialist</option>
+                                            <option value="Telecommunication Engineer">Telecommunication Engineer</option>
+                                            <option value="Telecommunication Technician">Telecommunication Technician</option>
+                                            <option value="Web Customer Support Specialist">Web Customer Support Specialist</option>
+                                            <option value="Manager, Computer Operations">Manager, Computer Operations</option>
+                                            <option value="Supervisor, Computer Operations">Supervisor, Computer Operations</option>
+                                            <option value="Production Support Analyst">Production Support Analyst</option>
+                                            <option value="Manager, Telecommunication Operations">Manager, Telecommunication Operations</option>
+                                            <option value="Knowledge Engineer">Knowledge Engineer</option>
+                                            <option value="Manager IT Procurement">Manager IT Procurement</option>
+                                            <option value="Manager IT Procurement">IT Procurement Specialist</option>
+                                            <option value="Technical Advisor">Technical Advisor</option>
+                                            <option value="Manager, HR/IT Staffing">Manager, HR/IT Staffing</option>
+                                            <option value="Technical Recruiter">Technical Recruiter</option>
+                                            <option value="HR/IT Generalist">HR/IT Generalist</option>
+                                            <option value="IT Auditor">IT Auditor</option>
+                                            <option value="Manager, Technical Training">Manager, Technical Training</option>
+                                            <option value="Technical Trainer">Technical Trainer</option>
+                                            <option value="Security Manager">Security Manager</option>
+                                            <option value="Security Analyst">Security Analyst</option>
+                                            <option value="Network Security Specialist">Network Security Specialist</option>
+                                            <option value="System Security Specialist">System Security Specialist</option>
+                                            <option value="Web Security Specialist">Web Security Specialist</option>
+                                            <option value="Product Architect">Product Architect</option>
+                                            <option value="Product Engineer">Product Engineer</option>
+                                            <option value="Product Developer">Product Developer</option>
+                                            <option value="Program Manager">Program Manager</option>
+                                            <option value="Project Manager">Project Manager</option>
+                                            <option value="Project Leader">Project Leader</option>
+                                            <option value="Project Management Specialist">Project Management Specialist</option>
+                                            <option value="Manager, Systems Software">Manager, Systems Software</option>
+                                            <option value="Systems Architect">Systems Architect</option>
+                                            <option value="Systems Software Programmer">Systems Software Programmer</option>
+                                            <option value="Groupware Specialist">Groupware Specialist</option>
+                                            <option value="Systems Administrator">Systems Administrator</option>
+                                            <option value="UNIX System Administrator">UNIX System Administrator</option>
+                                            <option value="Storage Management Specialist">Storage Management Specialist</option>
+                                            <option value="Manager, IT Business Planning">Manager, IT Business Planning</option>
+                                            <option value="IT Business Consultant">IT Business Consultant</option>
+                                            <option value="Manager, Customer Relations">Manager, Customer Relations</option>
+                                            <option value="Release/Build Engineer">Release/Build Engineer</option>
+                                            <option value="Resource Manager">Resource Manager</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Position Family</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @*<input type="text" class="form-control form-control-solid" placeholder="" name="PositionFamily" />*@
+                                        <select class="form-control form-control-solid" name="PositionFamily">
+                                            <option value="">Select Position Family</option>
+                                            <option value="Applications Development">Applications Development</option>
+                                            <option value="Business Analysis & Planning">Business Analysis & Planning</option>
+                                            <option value="Business Continuance Management">Business Continuance Management</option>
+                                            <option value="Business Intelligence Systems Management">Business Intelligence Systems Management</option>
+                                            <option value="Business Management/Administration">Business Management/Administration</option>
+                                            <option value="Client Technologies">Client Technologies</option>
+                                            <option value="Customer Service Hotline">Customer Service Hotline</option>
+                                            <option value="Customer Support">Customer Support</option>
+                                            <option value="Data Strategy and Management">Data Strategy and Management</option>
+                                            <option value="Electronic Commerce">Electronic Commerce</option>
+                                            <option value="Enterprise Resource Planning (ERP)">Enterprise Resource Planning (ERP)</option>
+                                            <option value="Internet Planning,Eng.& Operations">Internet Planning,Eng.& Operations</option>
+                                            <option value="Network Management">Network Management</option>
+                                            <option value="Operations">Operations</option>
+                                            <option value="Product Development">Product Development</option>
+                                            <option value="Program Management">Program Management</option>
+                                            <option value="Quality Assurance">Quality Assurance</option>
+                                            <option value="Release Management">Release Management</option>
+                                            <option value="Security Management">Security Management</option>
+                                            <option value="Systems Programming & Admin">Systems Programming & Admin</option>
+                                            <option value="Sourcing & Vendor Relationship Management">Sourcing & Vendor Relationship Management</option>
+                                            <option value="Telecommunications">Telecommunications</option>
+                                            <option value="Training">Training</option>
+                                            <option value="Technical Product Support">Technical Product Support</option>
+                                            <option value="Technology Resource">Technology Resource</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Position Scope Variant</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        @*<input type="text" class="form-control form-control-solid" placeholder="" name="PositionScopeVariant" />*@
+                                        <select class="form-control form-control-solid" name="PositionScopeVariant">
+                                            <option value="">Select Position Scope Variant</option>
+                                            <option value="Advanced">Advanced</option>
+                                            <option value="Entry">Entry</option>
+                                            <option value="Intermediate">Intermediate</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="No Variance">No Variance</option>
+                                            <option value="Senior Manager">Senior Manager</option>
+                                            <option value="Team Leader">Team Leader</option>
+                                        </select>
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Purchase Order No</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="PurchaseOrderNo" />
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Purchase Requisition No</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="PurchaseRequisitionNo" />
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <div class="col-md-6 fv-row">
+                                            <!--begin::Label-->
+                                            <label class=" fs-6 fw-semibold mb-2">Status</label>
+                                            <!--end::Label-->
+                                            <div class="form-check form-check-solid form-switch form-check-custom fv-row">
+                                                <input class="form-check-input w-45px h-30px" type="checkbox" id="Status" checked>
+                                                <label class="form-check-label" for="Active"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-9 mb-7" id="hide_inactivedetails">
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class=" fs-6 fw-semibold mb-2">
+                                            <span class="required">Inactive Date</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <div class="input-group" id="kt_td_picker_date_only" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                            <input id="InactiveDate" name="InactiveDate" type="text" class="form-control form-control-solid" data-td-target="#kt_td_picker_date_only" readonly="readonly" />
+                                            <span class="input-group-text" data-td-target="#kt_td_picker_date_only" data-td-toggle="datetimepicker">
+                                                <i class="fas fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <div class="fv-plugins-message-container invalid-feedback" id="divdate" style="display:none;">
+                                            <div data-field="InactiveDate" data-validator="notEmpty">
+                                                Inactive Date is required
+                                            </div>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <!--begin::Label-->
+                                        <label class="fs-6 fw-semibold mb-2">
+                                            <span class="required">Inactive Reason</span>
+                                        </label>
+                                        <!--end::Label-->
+                                        <!--begin::Input-->
+                                        <input type="text" class="form-control form-control-solid" placeholder="" name="InactiveReason" id="InactiveReason" />
+                                        <div class="fv-plugins-message-container invalid-feedback" id="divreason" style="display:none;">
+                                            <div data-field="InactiveReason" data-validator="notEmpty">
+                                                Inactive Reason is required
+                                            </div>
+                                        </div>
+                                        <!--end::Input-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Card body-->
+                        <!--begin::Modal footer-->
+                        <div class="modal-footer flex-center">
+                            <!--begin::Button-->
+                            <button type="reset" id="kt_modal_add_customer_cancel" class="btn btn-danger me-3">Discard</button>
+                            <!--end::Button-->
+                            <!--begin::Button-->
+                            <button type="submit" id="kt_modal_add_customer_submit" class="btn btn-primary">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Modal footer-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+            </div>
+        </div>
+        <!--end::Modal - Customers - Add-->
+
+    </div>
+    <!--end::Content container-->
+</div>
+<!--end::Content-->
+
+@section scripts{
+
+    <!--begin::Vendors Javascript(used for this page only)-->
+    <script src="~/Content/assets/js/custom/apps/calendar/calendar.js"></script>
+
+    <script src="~/Content/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--end::Vendors Javascript-->
+    <!--begin::Custom Javascript(used for this page only)-->
+    <script src="~/Content/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/list/list.js"></script>
+    <script src="~/Content/assets/js/custom/apps/customers/addposition.js"></script>
+    <script src="~/Content/assets/js/widgets.bundle.js"></script>
+    <script src="~/Content/assets/js/custom/widgets.js"></script>
+    <!--end::Custom Javascript-->
+    <script>
+        new tempusDominus.TempusDominus(document.getElementById("InactiveDate"), {
+            display: {
+                viewMode: "calendar",
+                components: {
+                    decades: true,
+                    year: true,
+                    month: true,
+                    date: true,
+                    hours: false,
+                    minutes: false,
+                    seconds: false
+                }
+            }
+        });
+
+        function EditPosition_Click(clicked) {
+            $.ajax({
+                type: "POST",
+                url: '/Position/EditPosition',
+                data: '{id: ' + clicked + '}',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#btnpopup").click();
+                    //$("input[name='CustomerName']").val(response.positionData.CustomerName);
+                    $(".CustomerName").val(response.positionData.CustomerIdFK);
+                    $(".CustomerName").change();
+                    $("input[name='PositionIdPK']").val(response.positionData.PositionIdPK);
+                    $("input[name='CustomerIdFK']").val(response.positionData.CustomerIdFK);
+                    $("input[name='PositionNumber']").val(response.positionData.PositionNumber).attr("disabled", "disabled");
+                    $("select[name='PositionTitle']").val(response.positionData.PositionTitle);
+                    $("select[name='PositionFamily']").val(response.positionData.PositionFamily);
+                    $("select[name='PositionScopeVariant']").val(response.positionData.PositionScopeVariant);
+                    $("input[name='PurchaseOrderNo']").val(response.positionData.PurchaseOrderNo).addClass('input-disabled');
+                    $("input[name='PurchaseRequisitionNo']").val(response.positionData.PurchaseRequisitionNo);
+
+                    if (response.positionData.Status == true) {
+                        $("#Status").prop('checked', true);
+                        $("#hide_inactivedetails").hide();
+                    }
+                    if (response.positionData.Status == false) {
+                        $("#Status").prop('checked', false);
+                        $("#hide_inactivedetails").show();
+                    }
+
+                    $("input[name='InactiveDate']").val(response.positionData.InactiveDate);
+                    $("input[name='InactiveReason']").val(response.positionData.InactiveReason);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    submitButton.removeAttribute('data-kt-indicator');
+
+                    console.log("Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+
+                    Swal.fire({
+                        text: "Custom error : " + jqXHR.responseText + " Status: " + textStatus + " Http error:" + errorThrown,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    });
+
+                }
+            });
+
+
+
+        }
+        //$(document).ready(function () {
+        //    $("#Status").click(function () {
+        //        if ($(this).is(":checked")) {
+
+        //            $("#hide_inactivedetails").hide();
+        //            $("#divreason").hide();
+        //            $("#divdate").hide();
+        //        }
+        //        else {
+
+        //            $("#hide_inactivedetails").show();
+        //            $("#divreason").show();
+        //            $("#divdate").show();
+        //        }
+        //    });
+        //});
+        // $("#InactiveReason").blur(function () {
+        //        if ($(this).val() == "") {
+        //            $("#divreason").show();
+        //        } else {
+        //            $("#divreason").hide();
+        //        }
+        //    });
+
+        //    $("#InactiveDate").blur(function () {
+        //        if ($(this).val() == "") {
+        //            $("#divdate").show();
+        //        } else {
+        //            $("#divdate").hide();
+        //        }
+        //    });
+
+            function handleStatusUI() {
+            if ($("#Status").is(":checked")) {
+                $("#hide_inactivedetails").hide();
+            $("#divreason").hide();
+            $("#divdate").hide();
+            } else {
+                $("#hide_inactivedetails").show();
+
+            // Check if fields are empty and show messages if needed
+            if ($("#InactiveReason").val() === "") {
+                $("#divreason").show();
+                } else {
+                $("#divreason").hide();
+                }
+
+            if ($("#InactiveDate").val() === "") {
+                $("#divdate").show();
+                } else {
+                $("#divdate").hide();
+                }
+            }
+        }
+
+            $(document).ready(function () {
+                // Bind blur event to validate individual fields
+                $("#InactiveReason").blur(function () {
+                    if ($(this).val() === "") {
+                        $("#divreason").show();
+                    } else {
+                        $("#divreason").hide();
+                    }
+                });
+
+            $("#InactiveDate").blur(function () {
+                if ($(this).val() === "") {
+                $("#divdate").show();
+                } else {
+                $("#divdate").hide();
+                }
+            });
+
+            // Bind checkbox toggle
+            $("#Status").click(function () {
+                handleStatusUI();
+            });
+
+            // Run logic when modal is opened
+            $('#kt_modal_add_customer').on('shown.bs.modal', function () {
+                // Optional reset - set to active and clear fields (you can remove this part if you want to retain last state)
+                $("#Status").prop("checked", true);
+            $("#InactiveReason").val('');
+            $("#InactiveDate").val('');
+
+            handleStatusUI(); // Apply correct visibility
+            });
+        });
+   
+
+    </script>
+}

@@ -1,0 +1,401 @@
+﻿@*@model HRACCPortal.Models.TimesheetPdfModel
+
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="kt_app_content_container" class="app-container container-xxl">
+        <div class="card mb-5 mb-xl-10">
+            <div id="kt_timesheet_details" class="collapse show">
+                <div class="p-15">
+                    <table class="table" width="100%" style="padding-left:10px;">
+                        <tr>
+                            <td>
+                                <img src="~/Content/Images/HRACC_Logo.png" />
+                            </td>
+                            <td></td>
+                            <td><h1 style="text-align: center;margin-top: 50px;font-size: 50px;">Timesheet</h1></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h2>@Model.CompanyName</h2>
+                                @Model.CompanyAddress1 @Model.CompanyAddress2 <br />
+                                @Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip <br />
+                                @Model.CompanyEmail <br />
+                                @Model.CompanyPhone <br />
+                                @Model.CompanyFax
+                            </td>
+                            <td></td>
+                            <td style="text-align:right;">
+                                @if (Model.TimesheetEntries != null && Model.TimesheetEntries.Any())
+                                {
+                                    <text>
+                                        Consultant: <b>@Model.ConsultantName</b> <br />
+                                        Position: <b>@Model.PositionTitle</b> <br />
+                                        Month: <b>@Model.MonthStartDate - @Model.MonthEndDate</b> <br />
+                                        Total Hours: <b>@Model.TotalHours</b>
+                                    </text>
+                                }
+                                else
+                                {
+                                    <text>No timesheet details available</text>
+                                }
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><br /></td></tr>
+                        <tr>
+                            <td colspan="3">
+                                <table class="table" style="border:1px solid #eee; padding:5px;" id="subtable">
+                                    <tr style="border:1px solid #eee; padding:5px;">
+                                        <th style="border:1px solid #eee; padding:5px;">DATE</th>
+                                        <th style="border:1px solid #eee; padding:5px;">DESCRIPTION</th>
+                                        <th style="border:1px solid #eee; padding:5px;">HOURS</th>
+                                    </tr>
+                                    @foreach (var entry in Model.TimesheetEntries)
+                                    {
+                                        <tr style="border:1px solid #eee; padding:5px;">
+                                            <td style="border:1px solid #eee; padding:5px;">@entry.Date</td>
+                                            <td style="border:1px solid #eee; padding:5px;">@entry.Description</td>
+                                            <td style="border:1px solid #eee; padding:5px;text-align:right;">@entry.Hours</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td colspan="2" style="border:1px solid #eee; padding:5px;text-align:right;">Total Hours</td>
+                                        <td style="border:1px solid #eee; padding:5px;text-align:right;"><b>@Model.TotalHours</b></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><br /></td></tr>
+                        <tr>
+                            <td colspan="3" style="text-align:center">Thank you for your submission!</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align:center">
+                                <a href="@Url.Action("DownloadTimesheetPdf", "Timesheet", new { id = Model.TimesheetId })">Print</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+@*@model HRACCPortal.Models.TimesheetPdfModel
+
+    @{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div id="kt_content" class="app-container container-xxl">
+        <div class="card shadow-lg p-4" style="border-radius: 10px; background-color: #f8f9fa;">
+            <div id="kt_timesheet_details">
+                <div class="p-4">
+                    <table class="table" width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 20%; padding: 10px;">
+                                <img src="~/Content/Images/HRACC_Logo.png" style="max-width: 150px;" />
+                            </td>
+                            <td style="width: 60%; text-align: center;">
+                                <h1 style="font-size: 40px; color: #1F177F; font-weight: bold; margin: 0;">Timesheet</h1>
+                            </td>
+                            <td style="width: 20%;"></td>
+                        </tr>
+                    </table>
+
+                    <table class="table" width="100%" style="margin-top: 10px;">
+                        <tr>
+                            <td style="padding: 10px; vertical-align: top;">
+                                <h3 style="margin-bottom: 5px; color: #333;">@Model.CompanyName</h3>
+                                <p style="margin: 0; font-size: 14px; color: #555;">
+                                    @Model.CompanyAddress1 @Model.CompanyAddress2 <br />
+                                    @Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip <br />
+                                    Email: @Model.CompanyEmail <br />
+                                    Phone: @Model.CompanyPhone <br />
+                                    Fax: @Model.CompanyFax
+                                </p>
+                            </td>
+                            <td></td>
+                            <td style="padding: 10px; text-align: right; vertical-align: top;">
+                                @if (Model.TimesheetEntries != null && Model.TimesheetEntries.Any())
+                                {
+                                    <p style="font-size: 16px; color: #333;">
+                                        <b>Consultant:</b> @Model.ConsultantName <br />
+                                        <b>Position:</b> @Model.PositionTitle <br />
+                                        <b>Month:</b> @Model.MonthStartDate - @Model.MonthEndDate <br />
+                                        <b>Total Hours:</b> <span style="color: #1F177F; font-weight: bold;">@Model.TotalHours</span>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p style="color: red;">No timesheet details available</p>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered" style="margin-top: 20px; border: 1px solid #ddd; background-color: #fff;">
+                        <thead>
+                            <tr style="background-color: #1F177F; color: white; text-align: center;">
+                                <th style="padding: 10px;">DATE</th>
+                                <th style="padding: 10px;">DESCRIPTION</th>
+                                <th style="padding: 10px;">HOURS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in Model.TimesheetEntries)
+                            {
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="padding: 10px; text-align: center;">@entry.Date</td>
+                                    <td style="padding: 10px;">@entry.Description</td>
+                                    <td style="padding: 10px; text-align: right; font-weight: bold; color: #1F177F;">@entry.Hours</td>
+                                </tr>
+                            }
+                            <tr style="background-color: #f1f1f1;">
+                                <td colspan="2" style="padding: 10px; text-align: right; font-weight: bold;">Total Hours</td>
+                                <td style="padding: 10px; text-align: right; font-weight: bold; color: #1F177F;">@Model.TotalHours</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <p style="font-size: 16px; color: #333; font-weight: bold;">Thank you for your submission!</p>
+                        <a href="@Url.Action("DownloadTimesheetPdf", "Timesheet", new { id = Model.TimesheetId })"
+                           style="padding: 10px 20px; background-color: #1F177F; color: white; text-decoration: none; border-radius: 5px;">
+                            Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+
+
+@model HRACCPortal.Models.TimesheetPdfModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Timesheet - @Model.ConsultantName</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #1F177F;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .logo img {
+            max-width: 180px;
+        }
+
+        .title {
+            font-size: 34px;
+            font-weight: bold;
+            color: #1F177F;
+            text-align: center;
+            flex: 1;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box {
+            width: auto; /* Adjusted width to ensure both boxes fit side by side */
+            padding: 15px;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .info-box h3 {
+                margin: 0;
+                font-size: 18px;
+                color: #1F177F;
+                border-bottom: 2px solid #1F177F;
+                padding-bottom: 8px;
+                margin-bottom: 10px;
+            }
+
+            .info-box p {
+                margin: 5px 0;
+                font-size: 14px;
+                color: #444;
+            }
+
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #1F177F;
+            color: #fff;
+            padding: 14px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:last-child {
+            font-weight: bold;
+            background: #e3e6f3;
+        }
+
+        .total-row td {
+            font-size: 16px;
+            color: #1F177F;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .download-button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 24px;
+            background: #1F177F;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+            .download-button:hover {
+                background: #15126d;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="~/Content/Images/HRACC_Logo.png" alt="Company Logo">
+            </div>
+            <div class="title">Timesheet</div>
+            <div></div>
+        </div>
+
+        <!-- Company & Consultant Info Section -->
+        <div class="info-section">
+            <!-- Company Details -->
+            <div class="info-box">
+                <h3>Company Details</h3>
+                <p><b>@Model.CompanyName</b></p>
+                <p>@Model.CompanyAddress1 @Model.CompanyAddress2</p>
+                <p>@Model.CompanyCity, @Model.CompanyState, @Model.CompanyZip</p>
+                <p><b>Email:</b> @Model.CompanyEmail</p>
+                <p><b>Phone:</b> @Model.CompanyPhone</p>
+            </div>
+
+            <!-- Consultant Details -->
+            <div class="info-box">
+                <h3>Consultant Details</h3>
+                <p><b>Consultant:</b> @Model.ConsultantName</p>
+                <p><b>Position:</b> @Model.PositionTitle</p>
+                <p><b>Month:</b> @Model.MonthStartDate - @Model.MonthEndDate</p>
+                <p><b>Total Hours:</b> <span style="color: #1F177F; font-weight: bold;">@Model.TotalHours</span></p>
+            </div>
+        </div>
+
+        <!-- Timesheet Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.TimesheetEntries)
+                    {
+                        <tr>
+                            <td style="text-align: center;">@entry.Date</td>
+                            <td>@entry.Description</td>
+                            <td style="text-align: right; color: #1F177F; font-weight: bold;">@entry.Hours</td>
+                        </tr>
+                    }
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: right;">Total Hours</td>
+                        <td style="text-align: right;">@Model.TotalHours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Thank you for your submission!
+        </div>
+
+        <!-- Download Button -->
+        <div style="text-align: center;">
+            <a href="@Url.Action("DownloadTimesheetPdf", "Timesheet", new { id = Model.TimesheetId })" class="download-button">
+                Download PDF
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

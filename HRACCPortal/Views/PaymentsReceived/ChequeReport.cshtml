@@ -1,0 +1,127 @@
+﻿@model List<HRACCPortal.Models.ChequeReportViewModel>
+@{
+    ViewBag.Title = "Cheque Report";
+    var invoiceAmount = ViewBag.InvoiceAmount;
+    var paymentId = ViewBag.PaymentId;
+    var finalPayment = Model.LastOrDefault();
+    var amountPaid = finalPayment?.AmountPaidSoFar ?? 0;
+    var balance = finalPayment?.BalanceRemaining ?? 0;
+    string status = balance == 0 ? "Received" :
+                balance < invoiceAmount ? "Partially Received" : "Pending";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-xxl mt-5">
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-header bg-light d-flex flex-column flex-md-row justify-content-between align-items-center py-4">
+                <h3 class="card-title text-primary mb-2 mb-md-0">
+                    Manage Cheques for Payment ID <strong class="text-dark">@paymentId</strong>
+                </h3>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill">
+                    ← Back to Payments
+                </a>
+            </div>
+
+            <div class="card-body p-4">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success rounded-pill px-4 py-2">@TempData["Success"]</div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger rounded-pill px-4 py-2">@TempData["Error"]</div>
+                }
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label class="fw-bold text-muted">Invoice Amount:</label>
+                    <div class="fs-6 text-dark">@String.Format("{0:C}", invoiceAmount)</div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="fw-bold text-muted">Amount Paid:</label>
+                    <div class="fs-6 text-dark">@amountPaid.ToString("C")</div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="fw-bold text-muted">Balance:</label>
+                    <div class="fs-6 text-dark">@balance.ToString("C")</div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="fw-bold text-muted">Status:</label>
+                    <div>
+                        @{
+                            string badgeClass = status == "Received" ? "bg-success" :
+                                                status == "Partially Received" ? "bg-info" : "bg-secondary";
+                            string icon = status == "Received" ? "bi-check-circle-fill" :
+                                          status == "Partially Received" ? "bi-hourglass-split" : "bi-exclamation-circle";
+                        }
+                        <span class="badge @badgeClass text-white rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm">
+                            <i class="bi @icon"></i> @status
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle rounded shadow-sm">
+                        <thead class="table-light text-center">
+                            <tr class="fw-semibold">
+                                <th>#</th>
+                                <th>Cheque Number</th>
+                                <th>Cheque Amount</th>
+                                <th>Date Received</th>
+                                <th>Amount Paid So Far</th>
+                                <th>Balance Remaining</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            @if (Model != null && Model.Any())
+                            {
+                                int sn = 1;
+                                foreach (var cheque in Model)
+                                {
+                                    <tr class="bg-white">
+                                        <td>@sn</td>
+                                        <td>
+                                            <i class="bi bi-receipt text-primary me-1"></i>
+                                            <strong>@cheque.ChequeNumber</strong>
+                                        </td>
+                                        <td>@cheque.ChequeAmount</td>
+                                        <td>@(cheque.DateReceived.HasValue ? cheque.DateReceived.Value.ToString("dd-MMM-yyyy") : "-")</td>
+
+
+
+
+                                        <td>
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">
+                                                @cheque.AmountPaidSoFar.ToString("C")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning-subtle text-dark rounded-pill px-3 py-1">
+                                                @cheque.BalanceRemaining.ToString("C")
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    sn++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-muted text-center py-3">No cheque records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons (if not already included) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
